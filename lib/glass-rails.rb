@@ -1,0 +1,1 @@
+require "glass_rails"
