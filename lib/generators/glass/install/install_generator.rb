@@ -16,6 +16,8 @@ module Glass
       end
       def create_glass_account_migration
         generate("model", "glass_account token refresh_token expires_at:integer email name #{user_model.underscore.singularize}:references")
+        remove_file("app/models/glass_account.rb")
+        copy_file("glass_account.rb", "app/models/glass_account.rb")
         insert_into_file("app/models/#{user_model.underscore.singularize}.rb", "\n\s\shas_one :glass_account\n\n", after: "ActiveRecord::Base\n")
       end
     end
