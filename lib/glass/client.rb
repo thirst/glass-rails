@@ -4,7 +4,7 @@ module Glass
   class Client
     attr_accessor :access_token,          :google_client,           :mirror_api, 
                   :user_account,          :refresh_token,           :content,
-                  :mirror_content_type,   :timeline_item,           :has_expired_token?
+                  :mirror_content_type,   :timeline_item,           :has_expired_token
     ## opts expects a hash with a key of access_token with 
     ## the user's access token and a user
 
@@ -16,7 +16,7 @@ module Glass
       self.google_account = opts[:google_account]
       self.access_token = opts[:access_token] || google_account.try(:token) 
       self.refresh_token = opts[:refresh_token] || google_account.try(:refresh_token)
-      self.has_expired_token? = opts[:has_expired_token] || google_account.has_expired_token?
+      self.has_expired_token = opts[:has_expired_token] || google_account.has_expired_token?
       setup_with_our_access_tokens
       setup_with_user_access_token
     end
