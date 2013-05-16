@@ -15,7 +15,8 @@ module Glass
         Time.now.utc.strftime("%Y%m%d%H%M%S")
       end
       def create_glass_account_migration
-        generate("model", "glass_account token refresh_token expires_at:int email name #{user_model.underscore.singularize}:references")
+        generate("model", "glass_account token refresh_token expires_at:integer email name #{user_model.underscore.singularize}:references")
+        insert_into_file("app/models/#{user_model.underscore.singularize}.rb", "class #{user_model.camelize.singularize}\n", "\s\shas_one :glass_account")
       end
     end
   end
