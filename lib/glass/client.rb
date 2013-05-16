@@ -3,13 +3,13 @@ require "google/api_client"
 module Glass
   class Client
     attr_accessor :access_token,          :google_client,           :mirror_api, 
-                  :google_account,         :refresh_token,           :content,
+                  :google_account,         :refresh_token,          :content,
                   :mirror_content_type,   :timeline_item,           :has_expired_token
     ## opts expects a hash with a key of access_token with 
     ## the user's access token and a user
 
 
-    ### Glass::Client.new({user_account: User.find(1), access_token: "sometoken", refresh_token: "some_refresh_token"})
+    ### Glass::Client.new({google_account: some_google_account})
     def initialize(opts)
       self.google_client = ::Google::APIClient.new
       self.mirror_api = google_client.discovered_api("mirror", "v1")
@@ -23,9 +23,6 @@ module Glass
     def set_timeline_item(timeline_object)
       self.timeline_item = timeline_object
     end
-
-
-
     def mirror_content
       mirror_api.timeline.insert.request_schema.new(mirror_content_hash)
     end
@@ -73,9 +70,7 @@ module Glass
       Time.now.to_i + time
     end
     def convert_user_data(google_data_hash)
-
       ea_data_hash = {}
-      binding.pry
       ea_data_hash["token"] = google_data_hash["access_token"]
       ea_data_hash["expires_at"] = to_google_time(google_data_hash["expires_in"])
       ea_data_hash["id_token"] = google_data_hash["id_token"]
