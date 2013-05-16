@@ -1,6 +1,6 @@
 # Glass::Rails
 
-TODO: Write a gem description
+This is not at all stable yet.
 
 ## Installation
 
