@@ -1,0 +1,12 @@
+google_defaults: &google_defaults
+  scopes: [userinfo.email, userinfo.profile]
+  glass_scopes: [userinfo.email, userinfo.profile, glass.timeline]
+development:
+  client_id: CLIENT_ID
+  client_secret: CLIENT_SECRET
+test:
+  client_id: CLIENT_ID
+  client_secret: CLIENT_SECRET
+production:
+  client_id: CLIENT_ID
+  client_secret: CLIENT_SECRET
