@@ -4,7 +4,7 @@ class GoogleAccount < ActiveRecord::Base
   def token_expiry
     Time.at(self.expires_at)
   end
-  def token_has_expired?
+  def has_expired_token?
     token_expiry < Time.now
   end
   def update_google_tokens(google_auth_hash)

@@ -2,9 +2,9 @@ require "glass/api_keys"
 require "google/api_client"
 module Glass
   class Client
-    attr_accessor :access_token,        :google_client,         :mirror_api, 
-                  :user_account,    :refresh_token,         :content,
-                  :mirror_content_type, :timeline_item
+    attr_accessor :access_token,          :google_client,           :mirror_api, 
+                  :user_account,          :refresh_token,           :content,
+                  :mirror_content_type,   :timeline_item,           :has_expired_token?
     ## opts expects a hash with a key of access_token with 
     ## the user's access token and a user
 
@@ -13,11 +13,12 @@ module Glass
     def initialize(opts)
       self.google_client = ::Google::APIClient.new
       self.mirror_api = google_client.discovered_api("mirror", "v1")
-      self.user_account = opts[:user_account]
-      self.access_token = opts[:access_token] || user_account.try(:token) 
-      self.refresh_token = opts[:refresh_token] || user_account.try(:refresh_token)
+      self.google_account = opts[:google_account]
+      self.access_token = opts[:access_token] || google_account.try(:token) 
+      self.refresh_token = opts[:refresh_token] || google_account.try(:refresh_token)
+      self.has_expired_token? = opts[:has_expired_token] || google_account.has_expired_token?
       setup_with_our_access_tokens
-      # setup_with_user_access_token
+      setup_with_user_access_token
     end
     def set_timeline_item(timeline_object)
       self.timeline_item = timeline_object
@@ -63,8 +64,8 @@ module Glass
     end
 
     def update_token_if_necessary
-      if user_account.token_has_expired?
-        user_account.update_google_tokens(convert_user_data(google_client.authorization.fetch_access_token!))
+      if self.has_expired_token?
+        google_account.update_google_tokens(convert_user_data(google_client.authorization.fetch_access_token!))
       end
     end
 
@@ -72,7 +73,9 @@ module Glass
       Time.now.to_i + time
     end
     def convert_user_data(google_data_hash)
+
       ea_data_hash = {}
+      binding.pry
       ea_data_hash["token"] = google_data_hash["access_token"]
       ea_data_hash["expires_at"] = to_google_time(google_data_hash["expires_in"])
       ea_data_hash["id_token"] = google_data_hash["id_token"]
