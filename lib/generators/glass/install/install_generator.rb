@@ -20,6 +20,9 @@ module Glass
         template("google_account.rb", "app/models/google_account.rb")
         insert_into_file("app/models/#{user_model.underscore.singularize}.rb", "\n\s\shas_one :google_account\n\n", after: "ActiveRecord::Base\n")
       end
+      def create_initializer
+        copy_file "initializer.rb", "config/initializers/glass.rb"
+      end
     end
   end
 end
