@@ -64,7 +64,7 @@ module Glass
     end
 
     def update_token_if_necessary
-      if self.has_expired_token?
+      if self.has_expired_token
         google_account.update_google_tokens(convert_user_data(google_client.authorization.fetch_access_token!))
       end
     end
