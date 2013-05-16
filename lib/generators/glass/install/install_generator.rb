@@ -15,10 +15,10 @@ module Glass
         Time.now.utc.strftime("%Y%m%d%H%M%S")
       end
       def create_glass_account_migration
-        generate("model", "glass_account token refresh_token expires_at:integer email name #{user_model.underscore.singularize}:references")
-        remove_file("app/models/glass_account.rb")
-        template("glass_account.rb", "app/models/glass_account.rb")
-        insert_into_file("app/models/#{user_model.underscore.singularize}.rb", "\n\s\shas_one :glass_account\n\n", after: "ActiveRecord::Base\n")
+        generate("model", "google_account token refresh_token expires_at:integer email name #{user_model.underscore.singularize}:references")
+        remove_file("app/models/google_account.rb")
+        template("google_account.rb", "app/models/google_account.rb")
+        insert_into_file("app/models/#{user_model.underscore.singularize}.rb", "\n\s\shas_one :google_account\n\n", after: "ActiveRecord::Base\n")
       end
     end
   end

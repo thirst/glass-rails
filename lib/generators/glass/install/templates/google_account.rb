@@ -1,4 +1,4 @@
-class GlassAccount < ActiveRecord::Base
+class GoogleAccount < ActiveRecord::Base
   belongs_to :<%= user_model.underscore.singularize %>
   attr_accessible :email, :expires_at, :name, :refresh_token, :token
   def token_expiry
