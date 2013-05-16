@@ -13,6 +13,8 @@ module Glass
       end
       def self.next_migration_number(path)
         Time.now.utc.strftime("%Y%m%d%H%M%S")
+      end
+      def create_glass_account_migration
         migration_template "create_glass_accounts.rb", "db/migrate/create_glass_accounts.rb"
       end
     end
