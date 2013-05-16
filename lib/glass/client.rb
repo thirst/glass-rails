@@ -3,7 +3,7 @@ require "google/api_client"
 module Glass
   class Client
     attr_accessor :access_token,          :google_client,           :mirror_api, 
-                  :user_account,          :refresh_token,           :content,
+                  :google_account,         :refresh_token,           :content,
                   :mirror_content_type,   :timeline_item,           :has_expired_token
     ## opts expects a hash with a key of access_token with 
     ## the user's access token and a user
