@@ -1,3 +1,4 @@
+require "rails/all"
 require 'action_view'
 module Glass
   class Template < ActionView::Base
