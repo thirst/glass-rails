@@ -19,7 +19,6 @@ module Glass
     def image_style
       "style='position:absolute;left:0;top:#{image_top.to_i}px;max-width:100%;'"
     end
-
     def style_small_image
       /\{{2}small_image_style\}{2}/
     end
