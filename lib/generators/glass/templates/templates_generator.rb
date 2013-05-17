@@ -8,7 +8,7 @@ module Glass
       include Rails::Generators::Migration
 
       def copy_glass_templates
-        directory("templates", "app/views/glass-templates")
+        directory("", "app/views/glass-templates")
       end
     end
     private
