@@ -12,6 +12,5 @@ module Glass
       end
     end
     private
-
   end
 end
