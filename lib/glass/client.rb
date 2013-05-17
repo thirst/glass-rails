@@ -14,6 +14,14 @@ module Glass
       self.google_client = ::Google::APIClient.new
       self.mirror_api = google_client.discovered_api("mirror", "v1")
       self.google_account = opts[:google_account]
+
+      ### this isn't functional yet but this is an idea for 
+      ### an api for those who wish to opt out of passing in a
+      ### google account, by passing in a hash of options
+      ###
+      ### the tricky aspect of this is how to handle the update
+      ### of the token information if the token is expired.
+      ###  
       self.access_token = opts[:access_token] || google_account.try(:token) 
       self.refresh_token = opts[:refresh_token] || google_account.try(:refresh_token)
       self.has_expired_token = opts[:has_expired_token] || google_account.has_expired_token?
