@@ -38,7 +38,7 @@ module Glass
     def insert_partials
       matching_area = match_partial_template_in_template(self.template)
       partial_filename = matching_area[:partial_name]
-      partial = File.read("#{template_directory}/_#{partial_filename}.han-dlebars")
+      partial = File.read("#{template_directory}/_#{partial_filename}#{self.extension}")
       self.template.gsub!(/\{{2}partial\s#{partial_filename}\}{2}/, partial)
     end
     def template_name
