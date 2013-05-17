@@ -85,7 +85,7 @@ module Glass
     end
     def insert_brandname_styles
       styles = ::Glass.brandname_styles.map do |style_attr, style_value|
-        style_attr = style_attr.gsub("_", "-")
+        style_attr = style_attr.to_s.gsub("_", "-")
         styling = "#{style_attr}: #{style_value};"
       end.join(" ")
       styles = "style='#{styles}'";
