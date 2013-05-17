@@ -13,7 +13,7 @@ module Glass
                         font_size: "30px"}
 
   mattr_accessor :glass_template_path
-  @@glass_template_path = "" 
+  @@glass_template_path = "app/views/glass-templates" 
   def self.setup
     yield self
   end
