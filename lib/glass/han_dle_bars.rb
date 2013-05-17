@@ -1,6 +1,6 @@
 module Glass
   class HanDleBars
-    attr_accessor :timeline_item, :template
+    attr_accessor :timeline_item, :template, :extension
     def initialize(timeline_item)
       self.timeline_item = timeline_item
       timeline_item.footer = wrap_footer(timeline_item.footer)
