@@ -6,11 +6,15 @@ module Glass
     # include ::ActionView::Helpers::TagHelper
     # attr_accessor :timeline_item, :template, :extension
     def initialize(param, opts)
-      if glass.glass_template_path.present? 
-        super(Rails.root.join(glass.glass_template_path))
+      if glass_template_path.present? 
+        super(Rails.root.join(glass_template_path))
       else
         super(Rails.root.join("app", "views", "glass-templates"))
       end
+    end
+    private
+    def glass_template_path
+      ::Glass.glass_template_path
     end
   end  
 end
