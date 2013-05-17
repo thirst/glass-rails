@@ -6,11 +6,11 @@ module Glass
     # include ::ActionView::Helpers::TagHelper
     # attr_accessor :timeline_item, :template, :extension
     def initialize(param, opts)
-      super(param)
-      binding.pry
+      if glass.glass_template_path.present? 
+        super(Rails.root.join(glass.glass_template_path))
+      else
+        super(Rails.root.join("app", "views", "glass-templates"))
+      end
     end
-    # def default_url_options
-    #   {host: 'yourhost.org'}
-    # end
   end  
 end

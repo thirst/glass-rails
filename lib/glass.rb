@@ -10,7 +10,10 @@ module Glass
   @@brandname = "example"
   mattr_accessor :brandname_styles
   @@brandname_styles = {color: "#8BCDF8", 
-                        font_size: "30px"} 
+                        font_size: "30px"}
+
+  mattr_accessor :glass_template_path
+  @@glass_template_path = "" 
   def self.setup
     yield self
   end
