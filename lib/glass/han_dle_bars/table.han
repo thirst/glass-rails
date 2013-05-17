@@ -1,0 +1,9 @@
+<article>
+  <section {{section_options}}>
+    <table {{table_options}}> 
+      {{table_header}}
+      {{table_rows}}
+    </table>
+  </section>
+  {{footer}}
+</article>

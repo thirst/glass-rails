@@ -1,0 +1,4 @@
+  <div style="position:absolute;left:10px;top:0px;padding-left: 25px;width:100%;">
+    <span style="color:#8BCDF8;font-size:30px;">Thirst Droplet</span>
+  </div>
+  {{partial droplet}}

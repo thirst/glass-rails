@@ -1,0 +1,9 @@
+<article>
+  {{partial logo-top}}
+  <section style="padding-top:42px;">
+    <p {{p_options}}>
+      {{content}}
+    </p>
+  </section>
+  {{footer}}
+</article>

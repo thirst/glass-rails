@@ -20,8 +20,8 @@ module Glass
       if ::Glass.han_dle_bars_directory.present? 
         ::Glass.han_dle_bars_directory 
       else 
-        binding.pry
-        "#{Rails.root}/lib/google_glass/templates"
+        path = File.expand_path File.dirname(__FILE__)
+        "#{path}/han_dle_bars"
       end
     end
     def to_s
