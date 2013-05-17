@@ -5,12 +5,21 @@ module Glass
       self.timeline_item = timeline_item
       timeline_item.footer = wrap_footer(timeline_item.footer)
       self.extension = ::Glass.han_dle_bars_extension
-      self.template = File.read("#{template_directory}/#{self.template_name}#{self.extension}")
+      self.template = create_initial_template_from_file
       until there_is_a_partial(self.template) == false
         insert_partials
       end
       insert_brandname_and_styles
       insert_content_and_footer
+    end
+    def filename
+      self.template_name + self.extension
+    end
+    def template_file
+      self.template_directory + "/" + self.filename
+    end
+    def create_initial_template_from_file
+      File.read(self.template_file)
     end
     def glass_height
       360
