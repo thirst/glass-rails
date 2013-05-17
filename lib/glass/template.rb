@@ -6,7 +6,9 @@ module Glass
     # include ::ActionView::Helpers::TagHelper
     # attr_accessor :timeline_item, :template, :extension
     def initialize(opts={})
-      @content = opts[:content]
+      opts.each do |k,v|
+        self.instance_variable_set(k, v)
+      end
       if glass_template_path.present? 
         super(Rails.root.join(glass_template_path))
       else
