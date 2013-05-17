@@ -5,7 +5,7 @@ module Glass
   mattr_accessor :han_dle_bars_directory
   @@han_dle_bars_directory = ""
   mattr_accessor :han_dle_bars_extension
-  @@han_dle_bars_extension = "*.han"
+  @@han_dle_bars_extension = ".han"
   mattr_accessor :brandname
   @@brandname = "example"
   mattr_accessor :brandname_styles

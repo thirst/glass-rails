@@ -5,7 +5,7 @@ module Glass
       self.timeline_item = timeline_item
       timeline_item.footer = wrap_footer(timeline_item.footer)
       self.extension = ::Glass.han_dle_bars_extension
-      self.template = File.read("#{template_directory}/#{self.template_name}.#{self.extension}")
+      self.template = File.read("#{template_directory}/#{self.template_name}#{self.extension}")
       until there_is_a_partial(self.template) == false
         insert_partials
       end
