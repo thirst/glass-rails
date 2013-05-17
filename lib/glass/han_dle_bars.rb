@@ -4,10 +4,12 @@ module Glass
     def initialize(timeline_item)
       self.timeline_item = timeline_item
       timeline_item.footer = wrap_footer(timeline_item.footer)
-      self.template = File.read("#{template_directory}/#{self.template_name}.han-dlebars")
+      self.extension = ::Glass.han_dle_bars_extension
+      self.template = File.read("#{template_directory}/#{self.template_name}.#{self.extension}")
       until there_is_a_partial(self.template) == false
         insert_partials
       end
+      insert_brandname_and_styles
       insert_content_and_footer
     end
     def glass_height
@@ -43,13 +45,16 @@ module Glass
       raise NoTemplateDefinedError
     end
     def style(options={})
+      style_options(options)
+      remove_unneeded_options!
+    end
+    def style_options(options)
       options.each do |html_type_option, html_attributes|
         option_type = "#{html_type_option}_options"
         html_attributes_list = ""
         html_attributes.each {|html_attribute, value| html_attributes_list += " #{html_attribute}='#{value}'"}
         self.template = template.gsub(/\s*\{{2}#{option_type}\}{2}/, html_attributes_list)
       end
-      remove_unneeded_options!
     end
     def insertables
       raise InsertablesNotYetDefined
@@ -70,6 +75,21 @@ module Glass
     private
     def wrap_footer(footer_content)
       footer_content.present? ? "<footer class='text-minor muted'>#{footer_content}</footer>" : ""
+    end
+    def insert_brandname_and_styles
+      insert_brandname
+      insert_brandname_styles
+    end
+    def insert_brandname
+      self.template.gsub!(/\{{2}brandname\}{2}/, ::Glass.brandname)
+    end
+    def insert_brandname_styles
+      styles = ::Glass.brandname_styles.map do |style_attr, style_value|
+        style_attr = style_attr.gsub("_", "-")
+        styling = "#{style_attr}: #{style_value};"
+      end.join(" ")
+      styles = "style='#{styles}'";
+      self.template.gsub!(/\{{2}brandname_styles\}{2}/, styles)
     end
   end
 end

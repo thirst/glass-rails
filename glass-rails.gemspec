@@ -25,5 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "pry-rails"
+  spec.add_development_dependency "rspec", ">= 1.5.2"
+  spec.add_development_dependency "rspec-rails", '~> 2.11.0'
 
 end
