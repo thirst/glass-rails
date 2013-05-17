@@ -5,7 +5,7 @@ module Glass
     # include ::Rails.application.routes.url_helpers
     # include ::ActionView::Helpers::TagHelper
     # attr_accessor :timeline_item, :template, :extension
-    def initialize(param, opts)
+    def initialize(opts={})
       if glass_template_path.present? 
         super(Rails.root.join(glass_template_path))
       else
