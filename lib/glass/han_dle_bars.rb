@@ -21,7 +21,7 @@ module Glass
         ::Glass.han_dle_bars_directory 
       else 
         path = File.expand_path File.dirname(__FILE__)
-        "#{path}/han_dle_bars"
+        "#{path}/templates"
       end
     end
     def to_s
