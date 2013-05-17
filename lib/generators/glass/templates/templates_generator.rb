@@ -4,7 +4,7 @@ require 'rails/generators/migration'
 
 module Glass
   module Generators
-    class InstallGenerator < Base
+    class TemplatesGenerator < Base
       include Rails::Generators::Migration
 
       def copy_glass_templates
