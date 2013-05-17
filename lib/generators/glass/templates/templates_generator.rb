@@ -8,8 +8,7 @@ module Glass
       include Rails::Generators::Migration
 
       def copy_glass_templates
-        glass_templates_path = ::Glass.glass_templates_path
-        directory("templates", glass_templates_path)
+        directory("templates", "app/views/glass-templates")
       end
     end
     private
