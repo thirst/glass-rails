@@ -18,7 +18,6 @@ module Glass
     def set_template_instance_variables(opts)
       opts.each {|k,v| self.instance_variable_set("@#{k}", v) }
     end
-    
     def glass_template_path
       ::Glass.glass_template_path
     end
