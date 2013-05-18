@@ -1,4 +1,5 @@
 require "glass"
 require "glass/engine"
+require "glass/base"
 require "glass/template"
 require "glass/client"

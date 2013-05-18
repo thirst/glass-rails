@@ -20,6 +20,15 @@ module Glass
         template("google_account.rb", "app/models/google_account.rb")
         insert_into_file("app/models/#{user_model.underscore.singularize}.rb", "\n\s\shas_one :google_account\n\n", after: "ActiveRecord::Base\n")
       end
+      def create_timeline_items_migration
+        generate("model", %Q(glass/timeline_item google_account:references 
+                             glass_item_id is_deleted:boolean glass_etag 
+                             glass_self_link glass_kind glass_created_at:datetime 
+                             glass_updated_at:datetime glass_content_type 
+                             glass_content:text display_time:datetime )
+        gsub_file("app/models/glass/timeline_item", "ActiveRecord", "Glass")
+        insert_into_file("app/models/glass/timeline_item", "\n\s\sself.table_name = :glass_timeline_item", after: "::Base\n")
+      end
       def create_initializer
         copy_file "initializer.rb", "config/initializers/glass.rb"
       end
