@@ -25,7 +25,7 @@ module Glass
                              glass_item_id is_deleted:boolean glass_etag 
                              glass_self_link glass_kind glass_created_at:datetime 
                              glass_updated_at:datetime glass_content_type 
-                             glass_content:text display_time:datetime )
+                             glass_content:text display_time:datetime ))
         gsub_file("app/models/glass/timeline_item", "ActiveRecord", "Glass")
         insert_into_file("app/models/glass/timeline_item", "\n\s\sself.table_name = :glass_timeline_item", after: "::Base\n")
       end
