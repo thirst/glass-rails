@@ -12,13 +12,25 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+Or install locally by running the following command:
 
     $ gem install glass-rails
 
 ## Usage
 
-TODO: Write usage instructions here
+### Setting up
+
+We have a rails generator which will generate a 
+yaml file for your google api keys. The command for 
+the generator is: 
+
+    rails g glass:install
+
+This will generate a yaml file for your keys, an initializer for 
+setting up configuration details, and migrations for the appropriate
+tables.
+
+### 
 
 ## Contributing
 

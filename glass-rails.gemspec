@@ -6,8 +6,8 @@ require 'glass/rails/version'
 Gem::Specification.new do |spec|
   spec.name          = "glass-rails"
   spec.version       = Glass::Rails::VERSION
-  spec.authors       = ["Han"]
-  spec.email         = ["hkfortytwo@gmail.com"]
+  spec.authors       = ["Kunal Modi", "Han Kang"]
+  spec.email         = ["kunal@thirstlabs.com", 'han@therubyists.org']
   spec.description   = %q{something}
   spec.summary       = %q{something else}
   spec.homepage      = ""
