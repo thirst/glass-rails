@@ -19,7 +19,7 @@ module Glass
         insert_into_file("app/models/#{user_model.underscore.singularize}.rb", "\n\s\shas_one :google_account\n\n", after: "ActiveRecord::Base\n")
       end
       def self.next_migration_number(path)
-        Time.now.utc.strftime("%Y%m%d%H%M%S")
+        (Time.now.utc.strftime("%Y%m%d%H%M%S").to_i + 1).to_s
       end
       def create_timeline_items_migration
         migration_template "glass_timeline_item_migration.rb", "db/migrate/create_glass_timeline_items.rb"
