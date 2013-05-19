@@ -11,7 +11,7 @@ module Glass
       if glass_template_path.present? 
         super(Rails.root.join(glass_template_path))
       else
-        super(Rails.root.join("app", "views", "glass-templates"))
+        super(Rails.root.join("app", "views", "glass"))
       end
     end
     private

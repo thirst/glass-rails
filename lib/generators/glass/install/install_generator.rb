@@ -24,6 +24,12 @@ module Glass
       def create_timeline_items_migration
         migration_template "glass_timeline_item_migration.rb", "db/migrate/create_glass_timeline_items.rb"
       end
+      def create_subscription_notifications_controller
+        generate("controller", "glass/notifications")
+        remove_file("app/controllers/glass/notifications_controller.rb")
+        template("notifications_controller.rb", "app/controllers/glass/notifications_controller.rb")
+        insert_into_file("config/routes.rb", "\n\s\spost 'glass/notifications', to: 'glass/notifications#callback'\n\n", after: "routes.draw\sdo\n")
+      end
       def create_initializer
         copy_file "initializer.rb", "config/initializers/glass.rb"
       end

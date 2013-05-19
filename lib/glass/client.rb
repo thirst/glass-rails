@@ -21,10 +21,12 @@ module Glass
       ###
       ### the tricky aspect of this is how to handle the update
       ### of the token information if the token is expired.
-      ###  
+
       self.access_token = opts[:access_token] || google_account.try(:token) 
       self.refresh_token = opts[:refresh_token] || google_account.try(:refresh_token)
       self.has_expired_token = opts[:has_expired_token] || google_account.has_expired_token?
+
+      
       setup_with_our_access_tokens
       setup_with_user_access_token
     end
