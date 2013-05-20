@@ -36,6 +36,7 @@ module Glass
     end
     def set_timeline_item(timeline_object)
       self.timeline_item = timeline_object
+      self
     end
     def mirror_content
       mirror_api.timeline.insert.request_schema.new(mirror_content_hash)
@@ -54,7 +55,6 @@ module Glass
       body_object = options[:content] || mirror_content
       inserting_content = { api_method: mirror_api.timeline.insert, 
                             body_object: body_object }.merge(options)
-      puts inserting_content
       google_client.execute(inserting_content)
     end
 
