@@ -8,8 +8,10 @@ Gem::Specification.new do |spec|
   spec.version       = Glass::Rails::VERSION
   spec.authors       = ["Kunal Modi", "Han Kang"]
   spec.email         = ["kunal@thirstlabs.com", 'han@therubyists.org']
-  spec.description   = %q{something}
-  spec.summary       = %q{something else}
+  spec.description   = %q{ A framework for creating google glass applications using ruby on rails. }
+  spec.summary       = %q{ A framework for creating google glass applications using ruby on rails. 
+                          This probably isn't for everyone, but we did our best to make it suitable for
+                          as many cases as possible. }
   spec.homepage      = ""
   spec.license       = "MIT"
 
