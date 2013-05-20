@@ -229,7 +229,7 @@ module Glass
     ## this is not intended to be a part of the public api
     def setup_template(variables={})
       glass_template_path = variables[:template_name] || self.template_name
-      Glass::Template.new({template_name: glass_template_path}.merge(variables)).render template: glass_template_path
+      Glass::Template.new({template_name: glass_template_path}.merge(variables)).render_self
     end
 
     ## this is not intended to be a part of the public api
