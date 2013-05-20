@@ -213,7 +213,7 @@ module Glass
 
     def insert(opts={})
       result = client.insert(opts)
-      if result.error 
+      if result.error? 
         raise TimelineInsertionError
       else
         data = result.data
