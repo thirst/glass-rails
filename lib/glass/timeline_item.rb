@@ -6,7 +6,7 @@ require "glass/menu_item"
 module Glass
   class TimelineItem < ::ActiveRecord::Base
     class GoogleAccountNotSpecifiedError < StandardError;end;
-
+    class UnserializedTemplateError < StandardError; end;
     self.table_name = :glass_timeline_items
 
     belongs_to :google_account
