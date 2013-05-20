@@ -65,12 +65,14 @@ api is probably a good idea.
 If you want your timeline item to have a list of menu-items, you can specify 
 the menu-items in your glass model like so:
 
-     class Glass::Tweet < Glass::TimelineItem
-        has_menu_item :custom_action_name, 
-                      display_name: "this is displayed", 
-                      icon_url: "http://icons.iconarchive.com/icons/enhancedlabs/lha-objects/128/Filetype-URL-icon.png", 
-                      with: :custom_action_handler
-     end
+```ruby
+ class Glass::Tweet < Glass::TimelineItem
+    has_menu_item :custom_action_name, 
+                  display_name: "this is displayed", 
+                  icon_url: "http://icons.iconarchive.com/icons/enhancedlabs/lha-objects/128/Filetype-URL-icon.png", 
+                  with: :custom_action_handler
+ end
+```
 
 
 ## Contributing
