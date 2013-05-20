@@ -1,12 +1,12 @@
 module Glass
   class Notification
-    attr_accessor :user, :params, :collection, :timeline_item, :user_actions
+    attr_accessor :google_account, :params, :collection, :timeline_item, :user_actions
 
     class VerificationError < StandardError; end
 
     def initialize(params)
       self.params = params
-      self.user = find_user
+      self.google_account = find_google_account(params)
       self.timeline_item = find_timeline_item
       self.collection = params[:collection]
       self.user_actions = params[:userActions]
@@ -21,12 +21,12 @@ module Glass
     end
 
     private
-    def find_user
-      User.find params[:userToken]
+    def find_google_account(params)
+      GoogleAccount.find params[:userToken]
     end
     def find_timeline_item
       if %w(UPDATE DELETE).include? params[:operation]
-        Glass::TimelineItem.find_by_google_id_and_user_id(params[:itemId], user.id)
+        Glass::TimelineItem.find_by_google_id_and_google_account_id(params[:itemId], google_account.id)
       else # INSERT - itemId is the id of the new item, which has a inReplyTo to an existing one
         external_account = user.external_accounts.where(type: :Google).first
         manager = GlassManager.new(external_account: external_account)

@@ -23,20 +23,79 @@ module Glass
     attr_accessor :template_type
     attr_writer :client, :mirror_content
 
+
+    ### a couple custom attr_readers which raise a
+    ### helpful error message if the value is nil;
+    ### i.e. error flow handling.
+    def mirror_content
+      raise UnserializedTemplateError unless @mirror_content
+      @mirror_content
+    end 
+    def client
+      raise UnserializedTemplateError unless @client
+      @client
+    end
+
+
+    ## this methods sets the default template for
+    ## all instances of the class. 
+
+    ## Usage: 
+    ##   class Glass::Tweet < Glass::TimelineItem
+
+    ##     defaults_template "table.html.erb" 
+                ## this defaults to the glass_template_path
+                ## which you set in your glass initializer.
+
+    ##   end
     def self.defaults_template(opts={})
       self.defaults_template = opts[:with] if opts[:with]
     end
+    ## this methods sets the default template for
+    ## all instances of the class. 
+
+    ## Usage: 
+    ##   class Glass::Tweet < Glass::TimelineItem
+
+    ##     manages_templates :template_manager_name
+                ## this will set your template manager
+                ## for this class. this will override
+                ## defaults_template path if it is 
+                ## defined.
+
+    ##   end
     def self.manages_templates(opts={})
       self.template_manager = opts[:with] if opts[:with]
     end
+    ## this methods sets the default template for
+    ## all instances of the class. 
 
+    ## Usage: 
+    ##   class Glass::Tweet < Glass::TimelineItem
+
+    ##     has_menu_item :my_custom_action,
+    ##       display_name: "Displayed Name",
+    ##       icon_url: "url for icon",
+    ##       handles_with: :custom_handler_methodname
+
+    ##       def custom_handler_methodname
+    ##         # this gets executed when this
+    ##         # action occurs.
+    ##       end
+    ##   end
     def self.has_menu_item(action_sym, opts) 
       self.actions ||= []
       self.menu_items ||= []
       unless self.actions.include?(action_sym)
         self.actions += [action_sym] 
+        defines_callback_methods
         menu_item = ::Glass::MenuItem.create(action_sym, opts)
         self.menu_items += [menu_item]
+      end
+    end
+    def self.defines_callback_methods(action, opts)
+      self.class.send(:define_method, "handles_#{action.underscore}") do
+        self.send(opts[:with])
       end
     end
     def self.menu_items_hash
@@ -56,14 +115,10 @@ module Glass
       self.client = Glass::Client.create(self)
       return self
     end
-    def mirror_content
-      raise UnserializedTemplateError unless @mirror_content
-      @mirror_content
-    end 
-    def client
-      raise UnserializedTemplateError unless @client
-      @client
-    end
+
+
+
+
     def template
       self.class.default_template || "simple.html.erb"
     end
