@@ -23,6 +23,7 @@ module Glass
     ## ruby has some very crappy class variables, which
     ## are nonsensically over-written across sub-classes.
     ## so use the rails class_attribute helpers instead.
+
     class_attribute :actions
     class_attribute :menu_items
     class_attribute :default_template 
@@ -76,7 +77,7 @@ module Glass
 
     ##   end
     def self.defaults_template(opts={})
-      self.defaults_template = opts[:with] if opts[:with]
+      self.template_name = opts[:with] if opts[:with]
     end
 
 
