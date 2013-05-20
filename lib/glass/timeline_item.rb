@@ -77,7 +77,7 @@ module Glass
 
     ##   end
     def self.defaults_template(opts={})
-      self.template_name = opts[:with] if opts[:with]
+      self.default_template = opts[:with] if opts[:with]
     end
 
 
