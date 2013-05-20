@@ -55,7 +55,7 @@ module Glass
       self.class.default_template || "simple.html.erb"
     end
     def setup_template(variables={})
-      Glass::Template.new({template_name: self.template}.merge({variables})).render template: self.template
+      Glass::Template.new({template_name: self.template}.merge(variables)).render template: self.template
     end
     def has_default_template?
       self.class.default_template
