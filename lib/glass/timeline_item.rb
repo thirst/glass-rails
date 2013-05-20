@@ -212,6 +212,12 @@ module Glass
     def insert(opts={})
       client.insert(opts)
     end
+    def patch(opts={})
+      
+    end
+    # def update(opts={})
+
+    # end
 
 
 
