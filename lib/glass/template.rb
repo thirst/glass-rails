@@ -25,6 +25,9 @@ module Glass
       set_template_instance_variables(opts)
       super(glass_template_path)
     end
+    def render_self
+      self.render template: self.template_name
+    end
     private
 
     ##
