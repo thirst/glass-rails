@@ -73,7 +73,49 @@ the menu-items in your glass model like so:
                   handles_with: :custom_action_handler
  end
 ```
-### Glass Models - (Handling Custom Menu Items)
+### Glass Models - Menu Items
+
+You can define a series of menu items for a glass model,
+using the helper method `has_menu_item`. This method takes the 
+following arguments:
+
+```ruby
+class Glass::ExampleCard < Glass::TimelineItem
+  has_menu_item <symbolized_name_of_action>, <options>
+  ## here options is a hash, and you can define here:
+  ## the displayed name of the action/menu item, 
+  ## i.e. 'like', as well as a url for an icon, and 
+  ## a callback method which gets executed when you
+  ## are notified of an event.
+end
+
+Basically, the way that the google mirror api works, you
+are required to subscribe to notifications from a user to
+get updated on the status of a user action on a timeline 
+item. This gems aims to aid the subscription and notification 
+process, primarily to get the process bootstrapped and ready to
+go. 
+
+You will automatically be subscribed to notifications on a timeline
+item, and will get notified to your glass callback url, which we have 
+inserted into your routes for you if you have used the install 
+generator.
+
+Once you have generated a timeline item glass model:
+
+```ruby
+class Glass::Tweet < Glass::TimelineItem
+end
+```
+
+You can use the `has_menu_item` helper method in your
+glass model to define menu items. These menu items will them be
+applied uniformly for your entire class. 
+
+Once you've posted to the timeline item to the glass user's
+timeline, you are registered to listen for notifications 
+that the user has acted on your card. You can specify a callback method
+using the `has_menu_item` helper method, by passing in the
 
 
 
