@@ -16,6 +16,13 @@ module Glass
 
     class_attribute :actions
     class_attribute :menu_items
+    class_attribute :default_template 
+    def self.defaults_template(opts={})
+      self.defaults_template = opts[:with] if opts[:with]
+    end
+    def self.manages_templates(opts={})
+      self.template_manager = opts[:with] if opts[:with]
+    end
 
     def self.has_menu_item(action_sym, opts) 
       self.actions ||= []
@@ -26,8 +33,19 @@ module Glass
         self.menu_items += [menu_item]
       end
     end
+    def self.menu_items_hash
+      {menuItems: self.menu_item.map(&:serialize) }
+    end
     def serialize
 
+    end
+    def template
+      self.class.default_template
+    end
+    def template_variables(variables={})
+    end
+    def has_default_template?
+      self.class.default_template
     end
   end
 end

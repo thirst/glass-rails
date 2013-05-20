@@ -10,6 +10,9 @@ module Glass
 
 
     ### Glass::Client.new({google_account: some_google_account})
+    def self.create(google_account, opts={})
+      new(opts.merge({google_account: google_account}))
+    end
     def initialize(opts)
       self.google_client = ::Google::APIClient.new
       self.mirror_api = google_client.discovered_api("mirror", "v1")
@@ -29,6 +32,7 @@ module Glass
       
       setup_with_our_access_tokens
       setup_with_user_access_token
+      self
     end
     def set_timeline_item(timeline_object)
       self.timeline_item = timeline_object
@@ -47,16 +51,19 @@ module Glass
     ##options hash requires either a key 'text' or key 'html'
     # with the corresponding value
     def insert(options={})
+      body_object = options[:content] || mirror_content
       inserting_content = { api_method: mirror_api.timeline.insert, 
-                            body_object: mirror_content }.merge(options)
+                            body_object: body_object }.merge(options)
       puts inserting_content
       google_client.execute(inserting_content)
     end
+
     def delete(options={})
       deleting_content = { api_method: mirror_api.timeline.delete,
                            parameters: options }
       google_client.execute(deleting_content)
     end
+
     private
     def setup_with_our_access_tokens
       api_keys = Glass::ApiKeys.new
