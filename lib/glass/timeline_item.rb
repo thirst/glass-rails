@@ -8,6 +8,8 @@ module Glass
     class GoogleAccountNotSpecifiedError < StandardError;end;
     class UnserializedTemplateError < StandardError; end;
     class MenuItemHandlerIsNotDefinedError < StandardError; end;
+    class TimelineInsertionError < StandardError; end;
+
     self.table_name = :glass_timeline_items
 
     belongs_to :google_account
@@ -124,7 +126,7 @@ module Glass
     ##         # action occurs.
     ##       end
     ##   end
-    def self.has_menu_item(action_sym, opts) 
+    def self.has_menu_item(action_sym, opts={}) 
       self.actions ||= []
       self.menu_items ||= []
       unless self.actions.include?(action_sym)
@@ -210,7 +212,29 @@ module Glass
     end
 
     def insert(opts={})
-      client.insert(opts)
+      result = client.insert(opts)
+      if result.error 
+        raise TimelineInsertionError
+      else
+        data = result.data
+        result_data_type = :html #default
+        [:html, :text].each do |result_type|
+          result_data_type = result_type if data.respond_to?(result_type)
+        end
+        if data.respond_to?(:html)
+          result_type = :html
+        elsif data.respond_to?(:text)
+          result_type = :text
+          self.update_attributes(glass_item_id: data.id, 
+                                  glass_etag: data.etag,
+                                  glass_self_link: data.self_link,
+                                  glass_kind: data.kind,
+                                  glass_created_at: data.created,
+                                  glass_updated_at: data.updated,
+                                  glass_content_type: result_data_type,
+                                  glass_content: data.send(result_data_type))
+        end
+      end
     end
     def patch(opts={})
       
