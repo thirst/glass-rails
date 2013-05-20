@@ -209,6 +209,10 @@ module Glass
       return self
     end
 
+    def insert(opts={})
+      client.insert(opts)
+    end
+
 
 
     ## this is not intended to be a part of the public api
