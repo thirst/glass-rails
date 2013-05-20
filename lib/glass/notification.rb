@@ -28,11 +28,11 @@ module Glass
       if %w(UPDATE DELETE).include? params[:operation]
         Glass::TimelineItem.find_by_google_id_and_google_account_id(params[:itemId], google_account.id)
       else # INSERT - itemId is the id of the new item, which has a inReplyTo to an existing one
-        external_account = user.external_accounts.where(type: :Google).first
-        manager = GlassManager.new(external_account: external_account)
-        item = manager.find(params[:itemId])
-        params[:reply] = item
-        Glass::TimelineItem.find_by_google_id_and_user_id(item[:inReplyTo], user.id)
+
+        ###
+        ### handle timeline item reply action
+        ### 
+        
       end
     end
     def verify_authenticity!

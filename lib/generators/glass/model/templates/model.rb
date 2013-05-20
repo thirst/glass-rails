@@ -20,11 +20,9 @@ class Glass::<%= model_name.camelize %> < Glass::TimelineItem
 
 
 
-  
+
   def custom_action_handler
     ## logic for handling custom action
   end
-
-
 
 end
