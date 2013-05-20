@@ -5,6 +5,7 @@ module Glass
                         :share,         :read_aloud,      :voice_call, 
                         :navigate,      :toggle_pinned]
 
+
     def self.create(action_sym, args)
       args = BUILT_IN_ACTIONS.include?(action_sym) ? args : args.merge({id: action_sym})
       new(args)
@@ -20,7 +21,7 @@ module Glass
     def action
       @action ||= "CUSTOM"
     end
-    
+
     def serialize
       hash = {action: action}
       hash.merge!({id: id, 
