@@ -145,6 +145,47 @@
 
 <p>You can define a different set of menu items for each model, so that would probably be something to consider when architecting your glass app. </p>
 
+<h2>Inserting a Timeline Item to Glass</h2>
+
+<p>For the sake of simplicity, let's continue with the example we've been using so far, the <code>Glass::Tweet</code> model. If we had a hypothetical tweet:</p>
+
+<div class="highlight"><pre><span class="err">@tweet</span> <span class="err">=</span> <span class="p">{</span> 
+  <span class="err">content:</span> <span class="nt">"Rails is omakase"</span><span class="p">,</span> 
+  <span class="err">author:</span> <span class="nt">"@dhh"</span> 
+<span class="p">}</span>
+</pre></div>
+
+<p>If we wanted to post it to a glass user's timeline, we would first initialize a <code>Glass::Tweet</code> object and associate it to the google account that we want to send this tweet.</p>
+
+<div class="highlight"><pre><span class="vi">@tweet_timeline_object</span> <span class="o">=</span> <span class="ss">Glass</span><span class="p">:</span><span class="ss">:Tweet</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">google_account_id</span><span class="p">:</span> <span class="no">GoogleAccount</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+
+<p>Then, we can serialize our html for posting by executing this command:</p>
+
+<div class="highlight"><pre><span class="vi">@tweet_timeline_object</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">template_variables</span><span class="p">:</span> <span class="p">{</span><span class="n">tweet_content</span><span class="p">:</span> <span class="vi">@tweet</span><span class="o">[</span><span class="ss">:content</span><span class="o">]</span><span class="p">,</span> 
+                                                      <span class="ss">author</span><span class="p">:</span> <span class="vi">@tweet</span><span class="o">[</span><span class="ss">:author</span><span class="o">]</span><span class="p">})</span>
+
+<span class="c1">### if you pass in a key named "template_name" </span>
+<span class="c1">### into the single argument that `serialize`</span>
+<span class="c1">### takes as a method, then you can also </span>
+<span class="c1">### override the default template rendered for </span>
+<span class="c1">### instances of this class.</span>
+
+<span class="c1">### For example:</span>
+<span class="vi">@tweet_timeline_object</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">template_variables</span><span class="p">:</span> <span class="p">{</span><span class="n">tweet_content</span><span class="p">:</span> <span class="vi">@tweet</span><span class="o">[</span><span class="ss">:content</span><span class="o">]</span><span class="p">,</span> 
+                                                      <span class="ss">author</span><span class="p">:</span> <span class="vi">@tweet</span><span class="o">[</span><span class="ss">:author</span><span class="o">]</span><span class="p">},</span>
+                                 <span class="n">template_name</span><span class="p">:</span> <span class="s2">"dramatic-tweet.html.erb"</span><span class="p">)</span>
+<span class="c1">### will render this tweet into the template located </span>
+<span class="c1">### in `app/views/glass/dramatic-tweet.html.erb` </span>
+<span class="c1">### provided you haven't overridden glass_templates_path</span>
+<span class="c1">### in your glass initializer.</span>
+</pre></div>
+
+<p>And finally, to post to our timeline, we can call this command:</p>
+
+<div class="highlight"><pre><span class="vi">@tweet_timeline_object</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
+</pre></div>
+
 <hr><h3>Subscriptions / Notifications</h3>
 
 <p>The subscription/notification aspect of the mirror api is probably one of the most opaque aspects of the api (at least, in my opinion), but we've tried to include some tools to help get this part set up for you as well. </p>
@@ -167,28 +208,29 @@
 
 <h2>Copyright / License</h2>
 
-<p>Copyright (c) 2013 Thirst Labs, Inc.</p>
+<pre><code>Copyright (c) 2013 Thirst Labs, Inc.
 
-<p>MIT License</p>
+MIT License
 
-<p>Permission is hereby granted, free of charge, to any person obtaining
+Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
 without limitation the rights to use, copy, modify, merge, publish,
 distribute, sublicense, and/or sell copies of the Software, and to
 permit persons to whom the Software is furnished to do so, subject to
-the following conditions:</p>
+the following conditions:
 
-<p>The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.</p>
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</code></pre>
         </section>
 
         <aside id="sidebar">
