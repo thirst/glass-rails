@@ -226,21 +226,40 @@ would look like this:</p>
 
 <hr><h3>Subscriptions / Notifications</h3>
 
-<p>The subscription/notification aspect of the mirror api is probably one of the most opaque aspects of the api (at least, in my opinion), but we've tried to include some tools to help get this part set up for you as well. </p>
+<p>The mirror api lets you subscribe to notifications on Timeline Items. For each user you want to subscribe to notifications for, you must register a callback url with that user's credentials. When a user does an action (delete, custom action, reply, etc.) on a timeline item, Google will post back to that callback url.</p>
 
-<p>Basically, you need to register a callback url for your glass subscriptions, and you will get notified when a glass user invokes a custom menu item. </p>
+<p>A subscription to Google has 5 main parts</p>
+
+<ul>
+<li>callbackUrl: Note that this must be HTTPS, so it won't work in development mode.</li>
+<li>collection: This can be 'timeline' or 'location'</li>
+<li>verifyToken: This is optional, but lets you verify that the request came from Google. Out of the box, we have set GoogleAccounts to have a randomly generated field called verification_secret that we automatically set as the verifyToken</li>
+<li>userToken: This is an optional string that Google will always pass back for a particular user. We have set this to be GoogleAccount.id</li>
+<li>operations: A list of action types (Insert, Update, Delete) you would want to be notified about</li>
+</ul><p>Subscriptions was probably the hardest part to test, but we've included some tools that should make it easier to deal with them.</p>
+
+<p>A GoogleAccount, on creation, will subscribe to the Google callback service with the route glass_notifications_callback_url, which we've defined in the Glass installer. The Glass Notifications controller will then handle Google's post and call the appropriate methods within the TimelineItem.</p>
 
 <p>For example, if a glass user activates the menu-item <code>email</code>, then our glass app would get pinged on our subscription notification callback url. From here, we've implemented a callback handler which allows you to easily manipulate any callback logic, in the comfort of your timeline item model. </p>
 
-<p>Specifically, whenever you define a custom menu item using our helper method:</p>
-
-<div class="highlight"><pre>  <span class="o">.</span><span class="n">.</span>
-  <span class="n">has_menu_item</span> <span class="ss">:email</span><span class="p">,</span> <span class="o">.</span><span class="n">.</span>
-       <span class="o">.</span><span class="n">.</span>
+<div class="highlight"><pre>  <span class="n">has_menu_item</span> <span class="ss">:email</span><span class="p">,</span>
+       <span class="n">icon_url</span><span class="p">:</span> <span class="s2">"http://example.com/test.jpg"</span>
+       <span class="n">display_name</span><span class="p">:</span> <span class="s2">"Email This!"</span>
        <span class="n">handles_with</span><span class="p">:</span> <span class="ss">:email_callback_method</span>
+
+  <span class="k">def</span> <span class="nf">email_callback_method</span>
+    <span class="c1"># Email this timeline item content to someone</span>
+  <span class="k">end</span>
 </pre></div>
 
-<p>We've ensured that the method <code>email_callback_method</code> gets executed whenever your subscription notification callback url is pinged with the corresponding menu-item event. </p>
+<p>The method <code>email_callback_method</code> gets executed whenever your subscription notification callback url is pinged with the corresponding menu-item event. </p>
+
+<p>You can also add Google's built in menu items:</p>
+
+<div class="highlight"><pre>  <span class="n">has_menu_item</span> <span class="ss">:read_aloud</span>
+</pre></div>
+
+<p>Note that most of the built in timeline actions (but not all) do not trigger callbacks from Google. Exceptions include reply, delete, and share.</p>
 
 <hr><h3>Plans for the Future</h3>
 
