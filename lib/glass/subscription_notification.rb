@@ -1,10 +1,14 @@
 module Glass
-  class Notification
+  class SubscriptionNotification
     attr_accessor :google_account,    :params,    :collection,
                   :user_actions
 
     class VerificationError < StandardError; end
 
+    def self.create(params)
+      notification = new(params)
+      notification.handle!
+    end
     def initialize(params)
       self.params = params
       self.collection = params[:collection]
@@ -20,11 +24,11 @@ module Glass
         # When your Glassware receives a location update, send a request to the glass.locations.get endpoint to retrieve the latest known location.
         # Something like: google_account.handle_location_update
       else
-        if user_actions.values.include? "SHARE"
+        if has_user_action? :share
           # TODO: Someone shared a card with this user's glassware. Who should handle this?
           # The actual reply with attachments with itemId, so we need to fetch that
           # Something like google_account.handle_shared_item(params)
-        elsif user_actions.values.include? "REPLY"
+        elsif has_user_action? :reply
           # TODO: Someone replied to a card.
           # itemId => TimelineItem which contains at least: inReplyTo (original item),
           # text (text transcription of reply), and attachments
@@ -35,14 +39,19 @@ module Glass
     end
 
     private
+    def has_user_action?(action)
+      user_actions.select{|user_action| user_action["type"].downcase == action.to_s}.first
+    end
+
     ## Handle actions on a timeline_item with a given id (custom actions, delete, etc.)
     def handle_action(item_id)
       timeline_item = find_timeline_item(item_id)
+
       # TODO: Should we uniq these? When glass doesn't have connection, it will queue up
       # actions, so users might press the same one multiple times.
       user_actions.uniq.each do |user_action|
         type = user_action[:type] == "CUSTOM" ? user_action[:payload] : user_action[:type]
-        timeline_item.send("handle_#{type.downcase}")
+        timeline_item.send("handles_#{type.downcase}")
       end if user_actions
     end
 
@@ -53,7 +62,7 @@ module Glass
 
     ## Find a given timeline item owned by the user
     def find_timeline_item(item_id)
-      Glass::TimelineItem.find_by_google_id_and_google_account_id(item_id, google_account.id)
+      Glass::TimelineItem.find_by_glass_item_id_and_google_account_id(item_id, google_account.id)
     end
 
     ## Verify authenticity of callback before doing anything
