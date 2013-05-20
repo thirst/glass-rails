@@ -102,7 +102,7 @@ module Glass
 
     ##   end
     def self.defines_callback_methods(action, opts)
-      self.class.send(:define_method, "handles_#{action.underscore}") do
+      self.class.send(:define_method, "handles_#{action.to_s.underscore}") do
         self.send(opts[:with])
       end
     end
