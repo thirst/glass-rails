@@ -5,6 +5,8 @@ require "glass/menu_item"
 
 module Glass
   class TimelineItem < ::ActiveRecord::Base
+    class GoogleAccountNotSpecifiedError < StandardError;end;
+
     self.table_name = :glass_timeline_items
 
     belongs_to :google_account
@@ -18,7 +20,7 @@ module Glass
     class_attribute :menu_items
     class_attribute :default_template 
 
-    attr_accessor :template_type
+    attr_accessor :template_type, :mirror_content
 
     def self.defaults_template(opts={})
       self.defaults_template = opts[:with] if opts[:with]
@@ -43,14 +45,17 @@ module Glass
       self.class.menu_items_hash
     end
     def serialize(opts={})
+      raise GoogleAccountNotSpecifiedError unless self.google_account.present?
+
       type = self.template_type || :html
       json_hash = {}
       json_hash[type] = self.setup_template(opts.delete(:template_variables))
       json_hash = json_hash.merge(self.menu_items_hash)
       json_hash.merge(opts)
-      json_hash
+      self.mirror_content = json_hash
+      return Glass::Client.new(self.google_account).set_timeline_item(self)
     end
-
+    
     def template
       self.class.default_template || "simple.html.erb"
     end
