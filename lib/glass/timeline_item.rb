@@ -34,7 +34,7 @@ module Glass
       end
     end
     def self.menu_items_hash
-      {menuItems: self.menu_item.map(&:serialize) }
+      {menuItems: self.menu_items.map(&:serialize) }
     end
     def serialize
 
