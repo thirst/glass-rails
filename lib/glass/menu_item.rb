@@ -6,7 +6,7 @@ module Glass
       if BUILT_IN_ACTIONS.include?(action_sym)
         new(args)
       else
-        new(args.merge({action: action_sym}))
+        new(args.merge({id: action_sym}))
       end
     end
     def initialize(opts={})
