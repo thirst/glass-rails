@@ -6,13 +6,9 @@ module Glass
     # include ::ActionView::Helpers::TagHelper
     attr_accessor :timeline_item, :template_name
     def initialize(opts={})
-      self.template_name = opts.delete(:template_name) || "simple_html.html.erb"
+      self.template_name = opts.delete(:template_name) || "simple.html.erb"
       set_template_instance_variables(opts)
-      if glass_template_path.present? 
-        super(Rails.root.join(glass_template_path))
-      else
-        super(Rails.root.join("app", "views", "glass"))
-      end
+      super(glass_template_path)
     end
     private
     def set_template_instance_variables(opts)

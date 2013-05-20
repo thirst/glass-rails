@@ -10,8 +10,10 @@ module Glass
 
 
     ### Glass::Client.new({google_account: some_google_account})
-    def self.create(google_account, opts={})
-      new(opts.merge({google_account: google_account}))
+    def self.create(timeline_item, opts={})
+      client = new(opts.merge({google_account: timeline_item.google_account}))
+      client.set_timeline_item(timeline_item)
+      client
     end
     def initialize(opts)
       self.google_client = ::Google::APIClient.new
