@@ -88,11 +88,19 @@ module Glass
       self.menu_items ||= []
       unless self.actions.include?(action_sym)
         self.actions += [action_sym] 
-        defines_callback_methods
+        defines_callback_methods(action_sym, opts)
         menu_item = ::Glass::MenuItem.create(action_sym, opts)
         self.menu_items += [menu_item]
       end
     end
+    ## this methods sets the default template for
+    ## all instances of the class. 
+
+    ## Usage: 
+    ##   class Glass::Tweet < Glass::TimelineItem
+
+
+    ##   end
     def self.defines_callback_methods(action, opts)
       self.class.send(:define_method, "handles_#{action.underscore}") do
         self.send(opts[:with])
