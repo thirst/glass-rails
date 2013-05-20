@@ -1,6 +1,6 @@
 # Glass::Rails
 
-This is not at all stable yet.
+A DSL for building Google Glass apps using Ruby on Rails.
 
 ## Installation
 
