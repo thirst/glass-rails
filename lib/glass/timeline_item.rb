@@ -17,6 +17,9 @@ module Glass
     class_attribute :actions
     class_attribute :menu_items
     class_attribute :default_template 
+
+    attr_accessor :template_type
+
     def self.defaults_template(opts={})
       self.defaults_template = opts[:with] if opts[:with]
     end
@@ -36,13 +39,23 @@ module Glass
     def self.menu_items_hash
       {menuItems: self.menu_items.map(&:serialize) }
     end
-    def serialize
+    def menu_items_hash
+      self.class.menu_items_hash
+    end
+    def serialize(opts={})
+      type = self.template_type || :html
+      json_hash = {}
+      json_hash[type] = self.setup_template(opts.delete(:template_variables))
+      json_hash = json_hash.merge(self.menu_items_hash)
+      json_hash.merge(opts)
+      json_hash
+    end
 
-    end
     def template
-      self.class.default_template
+      self.class.default_template || "simple.html.erb"
     end
-    def template_variables(variables={})
+    def setup_template(variables={})
+      Glass::Template.new({template_name: self.template}.merge({variables})).render template: self.template
     end
     def has_default_template?
       self.class.default_template
