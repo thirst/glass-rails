@@ -3,7 +3,7 @@ require "google/api_client"
 module Glass
   class Client
     attr_accessor :access_token,          :google_client,           :mirror_api, 
-                  :google_account,         :refresh_token,          :content,
+                  :google_account,        :refresh_token,          :content,
                   :mirror_content_type,   :timeline_item,           :has_expired_token
     ## opts expects a hash with a key of access_token with 
     ## the user's access token and a user
@@ -39,16 +39,16 @@ module Glass
       self
     end
     def mirror_content
-      mirror_api.timeline.insert.request_schema.new(mirror_content_hash)
+      mirror_api.timeline.insert.request_schema.new(self.timeline_item.mirror_content)
     end
-    def mirror_content_hash
-      self.content = timeline_item.template.to_s
-      mirror_hash = {}
-      mirror_hash[self.timeline_item.type] = self.content
-      mirror_hash.merge!(self.timeline_item.menu_items_hash)
-      mirror_hash["speakableText"] = self.timeline_item.speakableText if self.timeline_item.speakableText
-      mirror_hash
-    end
+    # def mirror_content_hash
+    #   self.content = timeline_item.template.to_s
+    #   mirror_hash = {}
+    #   mirror_hash[self.timeline_item.type] = self.content
+    #   mirror_hash.merge!(self.timeline_item.menu_items_hash)
+    #   mirror_hash["speakableText"] = self.timeline_item.speakableText if self.timeline_item.speakableText
+    #   mirror_hash
+    # end
     ##options hash requires either a key 'text' or key 'html'
     # with the corresponding value
     def insert(options={})

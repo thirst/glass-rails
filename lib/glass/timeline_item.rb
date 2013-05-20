@@ -20,7 +20,7 @@ module Glass
     class_attribute :menu_items
     class_attribute :default_template 
 
-    attr_accessor :template_type, :mirror_content
+    attr_accessor :template_type, :mirror_content, :client
 
     def self.defaults_template(opts={})
       self.defaults_template = opts[:with] if opts[:with]
@@ -46,14 +46,14 @@ module Glass
     end
     def serialize(opts={})
       raise GoogleAccountNotSpecifiedError unless self.google_account.present?
-
       type = self.template_type || :html
       json_hash = {}
       json_hash[type] = self.setup_template(opts.delete(:template_variables))
       json_hash = json_hash.merge(self.menu_items_hash)
       json_hash.merge(opts)
       self.mirror_content = json_hash
-      return Glass::Client.create(self.google_account).set_timeline_item(self)
+      self.client = Glass::Client.create(self.google_account).set_timeline_item(self)
+      return self
     end
     
     def template
