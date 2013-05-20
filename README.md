@@ -88,6 +88,7 @@ class Glass::ExampleCard < Glass::TimelineItem
   ## a callback method which gets executed when you
   ## are notified of an event.
 end
+```
 
 Basically, the way that the google mirror api works, you
 are required to subscribe to notifications from a user to
