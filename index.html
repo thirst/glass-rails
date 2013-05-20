@@ -181,6 +181,44 @@
 <span class="c1">### in your glass initializer.</span>
 </pre></div>
 
+<h2>How <code>Serialize</code> connects with our Glass Template</h2>
+
+<p>When we invoke the <code>serialize</code> method on glass timeline item object, we will populate your template, which should be
+either the default template for your timeline item class or a manually specified template in the serialize method, with instance variables, each of which correspond to key-value pairs contained within <code>template_variables</code>. </p>
+
+<p>So for our example above, this would mean:</p>
+
+<div class="highlight"><pre><span class="c1">### since we passed this hash:</span>
+<span class="c1">### {template_variables: {tweet_content: "Rails is omakase",</span>
+<span class="c1">###                       author: "@dhh"}}</span>
+<span class="c1">### we will populate our template with the following variables:</span>
+
+<span class="vi">@tweet_content</span> <span class="o">=</span> <span class="s2">"Rails is omakase"</span>
+<span class="vi">@author</span> <span class="o">=</span> <span class="s2">"@dhh"</span>
+<span class="c1">### note: the values passed into the serialize method </span>
+<span class="c1">###       do not have to be simple data types, they</span>
+<span class="c1">###       can be full-fledged objects too.</span>
+</pre></div>
+
+<p>so given an erb template that looks like this:</p>
+
+<div class="highlight"><pre><span class="x">&lt;article&gt;</span>
+<span class="x">  &lt;section&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@tweet_content</span> <span class="cp">%&gt;</span><span class="x">&lt;/section&gt;</span>
+<span class="x">  &lt;footer&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@author</span> <span class="cp">%&gt;</span><span class="x">&lt;/footer&gt;</span>
+<span class="x">&lt;/article&gt;</span>
+</pre></div>
+
+<p>We would be creating a html serialization of your data, which 
+would look like this:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;article&gt;</span>
+  <span class="nt">&lt;section&gt;</span>Rails is omakase<span class="nt">&lt;/section&gt;</span>
+  <span class="nt">&lt;footer&gt;</span>@dhh<span class="nt">&lt;/footer&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</pre></div>
+
+<p>Note: If you want to inspect that your html is getting serialized properly, you can inspect the html yourself by calling to_json on your timeline_item object. This will return a ruby hash which has the html serialization as well as the array of menu items which you intend to post with your timeline item.</p>
+
 <p>And finally, to post to our timeline, we can call this command:</p>
 
 <div class="highlight"><pre><span class="vi">@tweet_timeline_object</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
