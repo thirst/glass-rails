@@ -15,6 +15,8 @@ module Glass
   mattr_accessor :glass_template_path
   @@glass_template_path = "app/views/glass" 
 
+
+  ## devise trick
   def self.setup
     yield self
   end

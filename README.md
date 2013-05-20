@@ -44,7 +44,7 @@ This will generate a basic series of templates under the path,
 `app/views/glass` though you may want to organize them more logically,
 depending on your use case
 
-### Glass Models, aka TimelineItems (Introduction)
+### Glass Models, aka 'Timeline Items' - (Introduction)
 
 This gem also provides a glass model generator, which generates a timeline-item
 model for your use:
@@ -70,12 +70,14 @@ the menu-items in your glass model like so:
     has_menu_item :custom_action_name, 
                   display_name: "this is displayed", 
                   icon_url: "http://icons.iconarchive.com/icons/enhancedlabs/lha-objects/128/Filetype-URL-icon.png", 
-                  with: :custom_action_handler
+                  handles_with: :custom_action_handler
  end
 ```
-### Glass Models, aka TimelineItems (Handling Custom Menu Items)
+### Glass Models, aka 'Timeline Items' - (Handling Custom Menu Items)
 
-### Glass Models, aka TimelineItems (Posting Content) 
+
+
+### Glass Models, aka 'Timeline Items' - (Posting Content) 
 
 So using our Glass::Tweet class which we created above, we
 could instantiate a new instance of the class and assign it 

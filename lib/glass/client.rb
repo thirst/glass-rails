@@ -5,16 +5,17 @@ module Glass
     attr_accessor :access_token,          :google_client,           :mirror_api, 
                   :google_account,        :refresh_token,          :content,
                   :mirror_content_type,   :timeline_item,           :has_expired_token
-    ## opts expects a hash with a key of access_token with 
-    ## the user's access token and a user
 
 
-    ### Glass::Client.new({google_account: some_google_account})
+
+
     def self.create(timeline_item, opts={})
       client = new(opts.merge({google_account: timeline_item.google_account}))
       client.set_timeline_item(timeline_item)
       client
     end
+
+
     def initialize(opts)
       self.google_client = ::Google::APIClient.new
       self.mirror_api = google_client.discovered_api("mirror", "v1")
@@ -40,21 +41,16 @@ module Glass
       self.timeline_item = timeline_object
       self
     end
-    def mirror_content
-      mirror_api.timeline.insert.request_schema.new(self.timeline_item.mirror_content)
+    def json_content
+      mirror_api.timeline.insert.request_schema.new(self.timeline_item.to_json)
     end
-    # def mirror_content_hash
-    #   self.content = timeline_item.template.to_s
-    #   mirror_hash = {}
-    #   mirror_hash[self.timeline_item.type] = self.content
-    #   mirror_hash.merge!(self.timeline_item.menu_items_hash)
-    #   mirror_hash["speakableText"] = self.timeline_item.speakableText if self.timeline_item.speakableText
-    #   mirror_hash
-    # end
-    ##options hash requires either a key 'text' or key 'html'
-    # with the corresponding value
+
+    ## optional parameter is merged into the content hash 
+    ## before sending. good for specifying more application
+    ## specific stuff like speakableText parameters. 
+
     def insert(options={})
-      body_object = options[:content] || mirror_content
+      body_object = options[:content] || json_content
       inserting_content = { api_method: mirror_api.timeline.insert, 
                             body_object: body_object }.merge(options)
       google_client.execute(inserting_content)

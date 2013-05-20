@@ -1,5 +1,7 @@
 require "yaml"
 module Glass
+  ## just a small class to organize the api key logic info
+  ## from the yml file in config. 
   class ApiKeys
     class APIKeyConfigurationError < StandardError; end;
     attr_accessor :client_id, :client_secret, :google_api_keys
