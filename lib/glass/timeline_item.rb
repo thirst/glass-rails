@@ -53,7 +53,7 @@ module Glass
       json_hash = json_hash.merge(self.menu_items_hash)
       json_hash.merge(opts)
       self.mirror_content = json_hash
-      return Glass::Client.new(self.google_account).set_timeline_item(self)
+      return Glass::Client.create(self.google_account).set_timeline_item(self)
     end
     
     def template
