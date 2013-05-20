@@ -20,7 +20,8 @@ module Glass
     class_attribute :menu_items
     class_attribute :default_template 
 
-    attr_accessor :template_type, :mirror_content, :client
+    attr_accessor :template_type, :mirror_content
+    attr_writer :client
 
     def self.defaults_template(opts={})
       self.defaults_template = opts[:with] if opts[:with]
@@ -55,7 +56,10 @@ module Glass
       self.client = Glass::Client.create(self.google_account).set_timeline_item(self)
       return self
     end
-    
+    def client
+      raise UnserializedTemplateError unless @client
+      @client
+    end
     def template
       self.class.default_template || "simple.html.erb"
     end
