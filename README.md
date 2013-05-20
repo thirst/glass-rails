@@ -44,7 +44,7 @@ This will generate a basic series of templates under the path,
 `app/views/glass` though you may want to organize them more logically,
 depending on your use case
 
-### Glass Models
+### Glass Models, aka TimelineItems (Introduction)
 
 This gem also provides a glass model generator, which generates a timeline-item
 model for your use:
@@ -72,6 +72,49 @@ the menu-items in your glass model like so:
                   icon_url: "http://icons.iconarchive.com/icons/enhancedlabs/lha-objects/128/Filetype-URL-icon.png", 
                   with: :custom_action_handler
  end
+```
+### Glass Models, aka TimelineItems (Handling Custom Menu Items)
+
+### Glass Models, aka TimelineItems (Posting Content) 
+
+So using our Glass::Tweet class which we created above, we
+could instantiate a new instance of the class and assign it 
+an associated google account like so
+
+```ruby
+gt = Glass::Tweet.new(google_account_id: GoogleAccount.first)
+```
+Then, you can populate an erb template with instance variables by
+using the `serialize` method which is available to all subclasses 
+of Glass::TimelineItem (and yeah, to be clear, this includes Glass::Tweet).
+For example, let's say you have the following erb template:
+
+```erb
+<article>
+  <h1><%= @title %></h1>
+  <section>
+    <ul>
+      <%= @content %>
+    </ul>
+  </section>
+</article>
+```
+
+You can serialize the template for a glass::tweet instance like so:
+
+```ruby
+gt = Glass::Tweet.new(google_account_id: GoogleAccount.first)
+gt.serialize({template_variables: {content: "asdfasdfasdf", title: "title"}})
+```
+
+which will basically populate the `@content` and `@title` instance variables
+in the erb template, render it as a string, and get it prepped to send to the
+mirror api for insertion into the timeline.
+
+Then all you have to do is use the following command to actually insert the content:
+
+```ruby
+gt.client.insert
 ```
 
 
