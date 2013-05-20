@@ -1,42 +1,66 @@
 module Glass
   class Notification
-    attr_accessor :google_account, :params, :collection, :timeline_item, :user_actions
+    attr_accessor :google_account,    :params,    :collection,
+                  :user_actions
 
     class VerificationError < StandardError; end
 
     def initialize(params)
       self.params = params
-      self.google_account = find_google_account(params)
-      self.timeline_item = find_timeline_item
       self.collection = params[:collection]
       self.user_actions = params[:userActions]
+      self.google_account = find_google_account(params)
       verify_authenticity!
     end
 
+    ## Perform the corresponding notification actions
     def handle!
-      user_actions.uniq.each do |user_action|
-        type = user_action[:type] == "CUSTOM" ? user_action[:payload] : user_action[:type]
-        timeline_item.send("handle_#{type.downcase}", params)
-      end if user_actions
+      if collection == "locations"
+        # TODO: This is a location update - should the GoogleAccount handle these updates?
+        # When your Glassware receives a location update, send a request to the glass.locations.get endpoint to retrieve the latest known location.
+        # Something like: google_account.handle_location_update
+      else
+        if user_actions.values.include? "SHARE"
+          # TODO: Someone shared a card with this user's glassware. Who should handle this?
+          # The actual reply with attachments with itemId, so we need to fetch that
+          # Something like google_account.handle_shared_item(params)
+        elsif user_actions.values.include? "REPLY"
+          # TODO: Someone replied to a card.
+          # itemId => TimelineItem which contains at least: inReplyTo (original item),
+          # text (text transcription of reply), and attachments
+        else # Custom Action or DELETE
+          handle_action(params[:itemId])
+        end
+      end
     end
 
     private
+    ## Handle actions on a timeline_item with a given id (custom actions, delete, etc.)
+    def handle_action(item_id)
+      timeline_item = find_timeline_item(item_id)
+      # TODO: Should we uniq these? When glass doesn't have connection, it will queue up
+      # actions, so users might press the same one multiple times.
+      user_actions.uniq.each do |user_action|
+        type = user_action[:type] == "CUSTOM" ? user_action[:payload] : user_action[:type]
+        timeline_item.send("handle_#{type.downcase}")
+      end if user_actions
+    end
+
+    ## Find the associated user from userToken
     def find_google_account(params)
       GoogleAccount.find params[:userToken]
     end
-    def find_timeline_item
-      if %w(UPDATE DELETE).include? params[:operation]
-        Glass::TimelineItem.find_by_google_id_and_google_account_id(params[:itemId], google_account.id)
-      else # INSERT - itemId is the id of the new item, which has a inReplyTo to an existing one
-        external_account = user.external_accounts.where(type: :Google).first
-        manager = GlassManager.new(external_account: external_account)
-        item = manager.find(params[:itemId])
-        params[:reply] = item
-        Glass::TimelineItem.find_by_google_id_and_user_id(item[:inReplyTo], user.id)
-      end
+
+    ## Find a given timeline item owned by the user
+    def find_timeline_item(item_id)
+      Glass::TimelineItem.find_by_google_id_and_google_account_id(item_id, google_account.id)
     end
+
+    ## Verify authenticity of callback before doing anything
     def verify_authenticity!
-      ##some logic for verification of authenticity.
+      unless params[:verifyToken] == google_account.verification_secret
+        raise VerificationError.new("received: #{params[:verifyToken]}")
+      end
     end
   end
 end

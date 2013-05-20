@@ -28,7 +28,7 @@ module Glass
         generate("controller", "glass/notifications")
         remove_file("app/controllers/glass/notifications_controller.rb")
         template("notifications_controller.rb", "app/controllers/glass/notifications_controller.rb")
-        insert_into_file("config/routes.rb", "\n\s\spost 'glass/notifications', to: 'glass/notifications#callback'\n\n", after: "routes.draw\sdo\n")
+        insert_into_file("config/routes.rb", "\n\s\spost 'glass/notifications', to: 'glass/notifications#callback', as: 'glass_notifications_callback'\n\n", after: "routes.draw\sdo\n")
       end
       def create_initializer
         copy_file "initializer.rb", "config/initializers/glass.rb"
