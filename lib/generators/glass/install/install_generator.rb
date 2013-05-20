@@ -13,7 +13,7 @@ module Glass
       end
 
       def create_glass_account_migration
-        generate("model", "google_account token refresh_token expires_at:integer email name id_token #{user_model.underscore.singularize}:references")
+        generate("model", "google_account token refresh_token expires_at:integer email name id_token verification_secret #{user_model.underscore.singularize}:references")
         remove_file("app/models/google_account.rb")
         template("google_account.rb", "app/models/google_account.rb")
         insert_into_file("app/models/#{user_model.underscore.singularize}.rb", "\n\s\shas_one :google_account\n\n", after: "ActiveRecord::Base\n")
@@ -28,7 +28,7 @@ module Glass
         generate("controller", "glass/notifications")
         remove_file("app/controllers/glass/notifications_controller.rb")
         template("notifications_controller.rb", "app/controllers/glass/notifications_controller.rb")
-        insert_into_file("config/routes.rb", "\n\s\spost 'glass/notifications', to: 'glass/notifications#callback'\n\n", after: "routes.draw\sdo\n")
+        insert_into_file("config/routes.rb", "\n\s\spost 'glass/notifications', to: 'glass/notifications#callback', as: 'glass_notifications_callback'\n\n", after: "routes.draw\sdo\n")
       end
       def create_initializer
         copy_file "initializer.rb", "config/initializers/glass.rb"

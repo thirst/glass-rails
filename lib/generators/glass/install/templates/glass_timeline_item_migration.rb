@@ -1,6 +1,7 @@
 class CreateGlassTimelineItems < ActiveRecord::Migration
   def change
     create_table :glass_timeline_items do |t|
+      t.string :type
       t.references :google_account
       t.string :glass_item_id
       t.boolean :is_deleted
