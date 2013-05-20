@@ -221,6 +221,7 @@ module Glass
         [:html, :text].each do |result_type|
           result_data_type = result_type if data.respond_to?(result_type)
         end
+        binding.pry
         self.update_attributes(glass_item_id: data.id, 
                                 glass_etag: data.etag,
                                 glass_self_link: data.self_link,
