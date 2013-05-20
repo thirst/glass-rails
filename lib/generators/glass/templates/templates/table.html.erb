@@ -1,9 +1,8 @@
 <article>
-  <section {{section_options}}>
+  <section>
     <table {{table_options}}> 
-      {{table_header}}
-      {{table_rows}}
+      <%= @content.table_header %>
+      <%= @content.table_rows %>
     </table>
   </section>
-  {{footer}}
 </article>

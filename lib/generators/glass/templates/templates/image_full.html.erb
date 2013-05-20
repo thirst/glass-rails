@@ -1,11 +1,9 @@
 <article class="photo">
-  {{partial logo-top}}
-  <img src="{{image_url}}" style="max-width:100%;">
+  <img src="<%= @content.image_url %>" style="max-width:100%;">
   <div class="photo-overlay" />
   <section style="height:180px;top:130px;">
-    <p {{p_options}}>
-      {{content}}
+    <p>
+      <%= @content %>
     </p>
   </section>
-  {{footer}}
 </article>
