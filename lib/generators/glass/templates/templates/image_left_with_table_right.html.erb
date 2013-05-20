@@ -1,12 +1,11 @@
 <article>
   <figure>
-    <img src="<%= @content.image_url %>">
+    <img src="<%= @image_url %>">
   </figure>
-  <section {{section_options}}>
-    <table {{table_options}}> 
-      {{table_header}}
-      {{table_rows}}
+  <section>
+    <table> 
+      <%= @table_header %>
+      <%= @table_body %>
     </table>
   </section>
-  {{footer}}
 </article>
