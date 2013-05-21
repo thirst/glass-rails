@@ -21,7 +21,7 @@ module Glass
         collection:   opts[:collection] || DEFAULT_COLLECTION,
         userToken:    user_token,
         verifyToken:  verification_secret,
-        callbackUrl:  callback_url,
+        callbackUrl:  opts[:callback_url] || callback_url,
         operation:    opts[:operations] || DEFAULT_OPERATIONS)
       result = google_client.execute(api_method: mirror_api.subscriptions.insert,
                                      body_object: subscription)
