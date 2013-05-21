@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{ A framework for creating google glass applications using ruby on rails. 
                           This probably isn't for everyone, but we did our best to make it suitable for
                           as many cases as possible. }
-  spec.homepage      = ""
+  spec.homepage      = "http://thirst.github.io/glass-rails/"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
