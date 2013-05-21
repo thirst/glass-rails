@@ -6,6 +6,7 @@ A DSL for building Google Glass apps using Ruby on Rails.
 
 Add this line to your application's Gemfile:
 
+    gem "google-api-client" # this is a dependency
     gem 'glass-rails'
 
 And then execute:
