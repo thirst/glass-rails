@@ -7,7 +7,7 @@ module Glass
 
 
     def self.create(action_sym, args)
-      args = BUILT_IN_ACTIONS.include?(action_sym) ? args : args.merge({id: action_sym})
+      args = BUILT_IN_ACTIONS.include?(action_sym) ? args.merge({action: action_sym.to_s.upcase}) : args.merge({id: action_sym})
       new(args)
     end
 
