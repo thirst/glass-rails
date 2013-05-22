@@ -41,8 +41,8 @@ module Glass
       self.timeline_item = timeline_object
       self
     end
-    def json_content
-      mirror_api.timeline.insert.request_schema.new(self.timeline_item.to_json)
+    def json_content(options)
+      mirror_api.timeline.insert.request_schema.new(self.timeline_item.to_json.merge(options))
     end
 
     ## optional parameter is merged into the content hash 
@@ -50,9 +50,9 @@ module Glass
     ## specific stuff like speakableText parameters. 
 
     def insert(options={})
-      body_object = options[:content] || json_content
+      body_object = options[:content] || json_content(options)
       inserting_content = { api_method: mirror_api.timeline.insert, 
-                            body_object: body_object }.merge(options)
+                            body_object: body_object }
       google_client.execute(inserting_content)
     end
 
