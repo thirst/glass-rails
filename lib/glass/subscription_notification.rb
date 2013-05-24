@@ -58,9 +58,8 @@ module Glass
       # actions, so users might press the same one multiple times.
       user_actions.uniq.each do |user_action|
         type = user_action[:type] == "CUSTOM" ? user_action[:payload] : user_action[:type]
-        method_handler = "handles_#{type.downcase}"
         json_to_return = self.reply_request_hash ? self.reply_request_hash : self.params
-        timeline_item.method(method_handler.to_sym).arity > 0 ? timeline_item.send(method_handler, json_to_return) : timeline_item.send(method_handler)
+        timeline_item.send("handles_#{type.downcase}", json_to_return)
       end if user_actions
     end
 
