@@ -119,6 +119,36 @@ timeline, you are registered to listen for notifications
 that the user has acted on your card. You can specify a callback method
 using the `has_menu_item` helper method, by passing in the
 
+### Glass Models - Menu Item Callbacks
+
+This framework does most of the heavy lifting for you for subscribing
+to notifications to your timeline items. If a glass-user 'acts' on a menu-item
+which you have specified on your card, you will generally be alerted of 
+that action (with the exception of a few built-in actions, like 'read-aloud').
+
+You may want to perform actions when certain actions are performed. For
+example, if you have an 'email me' menu-item defined, you may want to 
+perform a back-end task which emails some content to a glass-user. 
+
+The helper method `has_menu_item` therefore takes an options hash: if you specify
+a key called "handles_with", then we will automatically invoke the value as an
+instance method when the callback is triggered. 
+
+For example, in the code sample below:
+
+```ruby
+class Glass::Tweet < Glass::TimelineItem
+  has_menu_item :email, handles_with: :respond_to_email_request
+  def respond_to_email_request
+
+  end
+end
+```
+
+.. whenever you receive a notification from google that an "email" action has
+been performed, the method "respond_to_email_request" will be automatically
+executed for you.
+
 
 
 ### Glass Models - (Posting Content) 
