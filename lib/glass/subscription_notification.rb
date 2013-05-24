@@ -17,6 +17,13 @@ module Glass
       verify_authenticity!
     end
 
+
+    ## things required to handle the notification properly
+    ##
+    ## 1. depending on the type of notification, we're going
+    ##    to need to get access to a timeline item
+
+
     ## Perform the corresponding notification actions
     def handle!
       if collection == "locations"
@@ -51,7 +58,8 @@ module Glass
       # actions, so users might press the same one multiple times.
       user_actions.uniq.each do |user_action|
         type = user_action[:type] == "CUSTOM" ? user_action[:payload] : user_action[:type]
-        timeline_item.send("handles_#{type.downcase}")
+        method_handler = "handles_#{type.downcase}"
+        timeline_item.method(method_handler.to_sym).arity > 0 ? timeline_item.send(method_handler, self.params) : timeline_item.send(method_handler)
       end if user_actions
     end
 

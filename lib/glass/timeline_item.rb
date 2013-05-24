@@ -100,7 +100,6 @@ module Glass
                 ## for this class. this will override
                 ## defaults_template path if it is 
                 ## defined.
-
     ##   end
     def self.manages_templates(opts={})
       self.template_manager = opts[:with] if opts[:with]
@@ -158,11 +157,13 @@ module Glass
 
 
 
-    ## not meant to be a part of the public api.
+    ## convert the menu items into hash form
+    ## not a part of the public api.
     def self.menu_items_hash
       {menuItems: self.menu_items.map(&:serialize) }
     end
 
+    ## convert class to instance method.
     ## not meant to be a part of the public api.
     def menu_items_hash
       self.class.menu_items_hash

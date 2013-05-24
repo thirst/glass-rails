@@ -3,7 +3,7 @@ require "google/api_client"
 module Glass
   class Client
     attr_accessor :access_token,          :google_client,           :mirror_api, 
-                  :google_account,        :refresh_token,          :content,
+                  :google_account,        :refresh_token,           :content,
                   :mirror_content_type,   :timeline_item,           :has_expired_token
 
 
@@ -25,6 +25,7 @@ module Glass
       ### an api for those who wish to opt out of passing in a
       ### google account, by passing in a hash of options
       ###
+      ###
       ### the tricky aspect of this is how to handle the update
       ### of the token information if the token is expired.
 
@@ -37,6 +38,19 @@ module Glass
       setup_with_user_access_token
       self
     end
+
+    def get_timeline_item(id)
+      self.google_client.execute(get_timeline_item_parameters(id))
+    end
+    def get_timeline_item_parameters(id)
+      { api_method: self.mirror_api.timeline.get,
+        parameters: {
+          "id" => id
+        }
+      }
+    end
+
+
     def set_timeline_item(timeline_object)
       self.timeline_item = timeline_object
       self
