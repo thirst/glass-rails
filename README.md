@@ -149,7 +149,24 @@ end
 been performed, the method "respond_to_email_request" will be automatically
 executed for you.
 
+For greater control over handling the callback from google, if you 
+define your callback method as accepting a parameter, then we will pass 
+the response hash from google into the callback method.
 
+For instance:
+
+```ruby
+class Glass::Tweet < Glass::TimelineItem
+  has_menu_item :email, handles_with: :respond_to_email_request
+  def respond_to_email_request(response)
+    ### we will pass the response object
+    ### into the callback method, if you
+    ### have allowed the callback
+    ### to accept a parameter. This is done
+    ### via a method arity check. 
+  end
+end
+```
 
 ### Glass Models - (Posting Content) 
 
