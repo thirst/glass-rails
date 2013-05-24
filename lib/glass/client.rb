@@ -50,11 +50,11 @@ module Glass
       }
     end
 
-
     def set_timeline_item(timeline_object)
       self.timeline_item = timeline_object
       self
     end
+
     def json_content(options)
       mirror_api.timeline.insert.request_schema.new(self.timeline_item.to_json.merge(options))
     end

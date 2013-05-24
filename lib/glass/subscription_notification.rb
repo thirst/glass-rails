@@ -1,7 +1,7 @@
 module Glass
   class SubscriptionNotification
-    attr_accessor :google_account,    :params,    :collection,
-                  :user_actions
+    attr_accessor :google_account,    :params,                  :collection,
+                  :user_actions,      :reply_request_hash,      :glass_item_id
 
     class VerificationError < StandardError; end
 
@@ -31,35 +31,36 @@ module Glass
         # When your Glassware receives a location update, send a request to the glass.locations.get endpoint to retrieve the latest known location.
         # Something like: google_account.handle_location_update
       else
-        if has_user_action? :share
-          # TODO: Someone shared a card with this user's glassware. Who should handle this?
-          # The actual reply with attachments with itemId, so we need to fetch that
-          # Something like google_account.handle_shared_item(params)
-        elsif has_user_action? :reply
-          # TODO: Someone replied to a card.
-          # itemId => TimelineItem which contains at least: inReplyTo (original item),
-          # text (text transcription of reply), and attachments
-        else # Custom Action or DELETE
-          handle_action(params[:itemId])
-        end
+        self.glass_item_id = params[:itemId]
+        handle_reply(params)
+        handle_action
       end
     end
 
     private
+    def handle_reply(params)
+      return unless has_user_action? :reply
+      google_client = ::Glass::Client.new(google_account: self.google_account)
+      self.reply_request_hash = google_client.get_timeline_item(params[:itemId])
+      self.glass_item_id = reply_request_hash[:inReplyTo]
+    end
+
+
     def has_user_action?(action)
       user_actions.select{|user_action| user_action["type"].downcase == action.to_s}.first
     end
 
     ## Handle actions on a timeline_item with a given id (custom actions, delete, etc.)
-    def handle_action(item_id)
-      timeline_item = find_timeline_item(item_id)
+    def handle_action
+      timeline_item = find_timeline_item(self.glass_item_id)
 
       # TODO: Should we uniq these? When glass doesn't have connection, it will queue up
       # actions, so users might press the same one multiple times.
       user_actions.uniq.each do |user_action|
         type = user_action[:type] == "CUSTOM" ? user_action[:payload] : user_action[:type]
         method_handler = "handles_#{type.downcase}"
-        timeline_item.method(method_handler.to_sym).arity > 0 ? timeline_item.send(method_handler, self.params) : timeline_item.send(method_handler)
+        json_to_return = self.reply_request_hash ? self.reply_request_hash : self.params
+        timeline_item.method(method_handler.to_sym).arity > 0 ? timeline_item.send(method_handler, json_to_return) : timeline_item.send(method_handler)
       end if user_actions
     end
 
