@@ -207,9 +207,21 @@ mirror api for insertion into the timeline.
 Then all you have to do is use the following command to actually insert the content:
 
 ```ruby
-gt.client.insert
+gt.insert()
 ```
 
+Additionally, if you would like to merge in attributes into the hash before it is 
+posted to the mirror-api, then you can optionally pass in a hash of attributes 
+to the insert() method call, and the hash will be merged into the body_object that
+is posted to the mirror api.
+
+This last point is relevant, for example, in the case of reading aloud text. 
+To do so, you need to specify a speakableText: "some text to be read aloud" attribute 
+in the body object when it gets posted. You can therefore do something like this:
+
+```ruby
+gt.insert(speakableText: "some text to be read aloud")
+```
 
 ## Contributing
 
