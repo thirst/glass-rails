@@ -147,8 +147,8 @@ module Glass
 
     def self.defines_callback_methods(action, opts)
       self.send(:define_method, "handles_#{action.to_s.underscore}") do
-        if self.respond_to?(opts[:handled_by])
-          self.send(opts[:handled_by])
+        if self.respond_to?(opts[:handles_with])
+          self.send(opts[:handles_with])
         else 
           raise MenuItemHandlerIsNotDefinedError
         end
