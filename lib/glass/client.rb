@@ -1,4 +1,5 @@
 require "glass/api_keys"
+require 'active_support/core_ext/hash/indifferent_access'
 require "google/api_client"
 module Glass
   class Client
@@ -33,14 +34,13 @@ module Glass
       self.refresh_token = opts[:refresh_token] || google_account.try(:refresh_token)
       self.has_expired_token = opts[:has_expired_token] || google_account.has_expired_token?
 
-      
       setup_with_our_access_tokens
       setup_with_user_access_token
       self
     end
 
     def get_timeline_item(id)
-      self.google_client.execute(get_timeline_item_parameters(id))
+      response_hash(self.google_client.execute(get_timeline_item_parameters(id)).response)
     end
     def get_timeline_item_parameters(id)
       { api_method: self.mirror_api.timeline.get,
@@ -76,13 +76,19 @@ module Glass
       google_client.execute(deleting_content)
     end
 
+
+    def response_hash(google_response)
+      JSON.parse(google_response.body).with_indifferent_access
+    end
     private
+
     def setup_with_our_access_tokens
       api_keys = Glass::ApiKeys.new
       ["client_id", "client_secret"].each do |meth| 
         google_client.authorization.send("#{meth}=", api_keys.send(meth)) 
       end
     end
+
     def setup_with_user_access_token
       google_client.authorization.update_token!(access_token: access_token, 
                                                 refresh_token: refresh_token)
@@ -98,6 +104,7 @@ module Glass
     def to_google_time(time)
       Time.now.to_i + time
     end
+
     def convert_user_data(google_data_hash)
       ea_data_hash = {}
       ea_data_hash["token"] = google_data_hash["access_token"]
@@ -105,5 +112,6 @@ module Glass
       ea_data_hash["id_token"] = google_data_hash["id_token"]
       ea_data_hash
     end
+
   end
 end
