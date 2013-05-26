@@ -175,7 +175,7 @@ could instantiate a new instance of the class and assign it
 an associated google account like so
 
 ```ruby
-gt = Glass::Tweet.new(google_account_id: GoogleAccount.first)
+gt = Glass::Tweet.new(google_account: GoogleAccount.first)
 ```
 Then, you can populate an erb template with instance variables by
 using the `serialize` method which is available to all subclasses 
