@@ -16,7 +16,7 @@ class Glass::<%= model_name.camelize %> < Glass::TimelineItem
 
   has_menu_item :custom_action_name, display_name: "this is displayed", 
                                      icon_url: "http://icons.iconarchive.com/icons/enhancedlabs/lha-objects/128/Filetype-URL-icon.png", 
-                                     handled_by: :custom_action_handler
+                                     handles_with: :custom_action_handler
 
 
 
