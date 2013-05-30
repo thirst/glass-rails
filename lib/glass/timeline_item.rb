@@ -179,7 +179,7 @@ module Glass
 
     ## For example,
     ## @google_account = GoogleAccount.first
-    ## @timeline_object =  TimelineObject.new(google_account_id: @google_account.id)
+    ## @timeline_object =  TimelineItem.new(google_account_id: @google_account.id)
     ## @timeline_object.serialize({template_variables: {content: "this is the content
     ##                                                            i've pushed to glass"}})
     ## 

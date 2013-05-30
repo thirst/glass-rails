@@ -19,7 +19,7 @@ module Glass
 
 
     def initialize(opts)
-      self.api_keys ||= ::Glass::ApiKeys.new
+      self.api_keys = opts[:api_keys] || ::Glass::ApiKeys.new
       self.google_client = ::Google::APIClient.new
       self.mirror_api = google_client.discovered_api("mirror", "v1")
       self.google_account = opts[:google_account]
@@ -58,7 +58,15 @@ module Glass
     end
 
     def json_content(options)
-      mirror_api.timeline.insert.request_schema.new(self.timeline_item.to_json.merge(options))
+      if c = options[:content]
+        data = c.is_a?(String) ? {text: c} : c
+      else
+        data = self.timeline_item.to_json.merge(options)
+      end
+      mirror_api.timeline.insert.request_schema.new(data)
+    end
+    def text_content(text)
+      mirror_api.timeline.insert.request_schema.new({text: text})
     end
 
     ## optional parameter is merged into the content hash 
@@ -66,7 +74,7 @@ module Glass
     ## specific stuff like speakableText parameters. 
 
     def insert(options={})
-      body_object = options[:content] || json_content(options)
+      body_object = json_content(options)
       inserting_content = { api_method: mirror_api.timeline.insert, 
                             body_object: body_object }
       google_client.execute(inserting_content)
