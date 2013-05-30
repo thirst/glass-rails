@@ -6,7 +6,7 @@ module Glass
     attr_accessor :access_token,          :google_client,           :mirror_api, 
                   :google_account,        :refresh_token,           :content,
                   :mirror_content_type,   :timeline_item,           :has_expired_token,
-                  :api_keys
+                  :api_keys,              :timeline_list
 
 
 
@@ -80,6 +80,42 @@ module Glass
       google_client.execute(inserting_content)
     end
 
+    
+    def timeline_list(opts={as_hash: true})
+      retval = @timeline_list.nil? ? self.list(opts) : @timeline_list
+      opts[:as_hash] ? retval.map(&:to_hash) : retval
+    end
+
+
+
+    ### this method is pretty much extracted directly from 
+    ### the mirror API code samples in ruby
+    ###
+    ### https://developers.google.com/glass/v1/reference/timeline/list
+
+    def list(opts={as_hash: true})
+      page_token = nil
+      parameters = {}
+      self.timeline_list = []
+      begin
+        parameters = {}
+        parameters['pageToken'] = page_token if page_token.present?
+        api_result = google_client.execute(api_method: mirror_api.timeline.list,
+                                           parameters: parameters)
+        if api_result.success?
+          timeline_items = api_result.data
+          page_token = nil if timeline_items.items.empty?
+          if timeline_items.items.any?
+            @timeline_list.concat(timeline_items.items)
+            page_token = timeline_items.next_page_token
+          end
+        else
+          puts "An error occurred: #{result.data['error']['message']}"
+          page_token = nil
+        end
+      end while page_token.to_s != ''
+      timeline_list(opts)
+    end
     def delete(options={})
       deleting_content = { api_method: mirror_api.timeline.delete,
                            parameters: options }
