@@ -5,7 +5,8 @@ module Glass
   class Client
     attr_accessor :access_token,          :google_client,           :mirror_api, 
                   :google_account,        :refresh_token,           :content,
-                  :mirror_content_type,   :timeline_item,           :has_expired_token
+                  :mirror_content_type,   :timeline_item,           :has_expired_token,
+                  :api_keys
 
 
 
@@ -18,6 +19,7 @@ module Glass
 
 
     def initialize(opts)
+      self.api_keys ||= ::Glass::ApiKeys.new
       self.google_client = ::Google::APIClient.new
       self.mirror_api = google_client.discovered_api("mirror", "v1")
       self.google_account = opts[:google_account]
@@ -83,9 +85,8 @@ module Glass
     private
 
     def setup_with_our_access_tokens
-      api_keys = Glass::ApiKeys.new
       ["client_id", "client_secret"].each do |meth| 
-        google_client.authorization.send("#{meth}=", api_keys.send(meth)) 
+        google_client.authorization.send("#{meth}=", self.api_keys.send(meth)) 
       end
     end
 
