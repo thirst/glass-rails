@@ -1,6 +1,7 @@
 require "glass/api_keys"
 require 'active_support/core_ext/hash/indifferent_access'
 require "google/api_client"
+
 module Glass
   class Client
     attr_accessor :access_token,          :google_client,           :mirror_api, 
@@ -53,12 +54,14 @@ module Glass
       self
     end
 
+
     def json_content(options)
       if c = options[:content]
         data = c.is_a?(String) ? {text: c} : c
       else
         data = self.timeline_item.to_json.merge(options)
       end
+      data = format_hash_properly(data)
       mirror_api.timeline.insert.request_schema.new(data)
     end
     def text_content(text)
@@ -153,6 +156,15 @@ module Glass
       ea_data_hash["id_token"] = google_data_hash["id_token"]
       ea_data_hash
     end
-
+    def format_hash_properly(data_hash)
+      data_hash.inject({}) do |acc, (key, value)|
+        new_key = key.to_s.camelize(:lower)
+        acc[new_key]= (new_key == "displayTime") ? format_date(value) : value
+        acc
+      end.with_indifferent_access
+    end
+    def format_date(time)
+      time.to_time.utc.iso8601.gsub("Z", ".000Z") # fucking google has a weird format
+    end
   end
 end
