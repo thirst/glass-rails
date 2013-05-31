@@ -8,15 +8,11 @@ module Glass
                   :mirror_content_type,   :timeline_item,           :has_expired_token,
                   :api_keys,              :timeline_list
 
-
-
-
     def self.create(timeline_item, opts={})
       client = new(opts.merge({google_account: timeline_item.google_account}))
       client.set_timeline_item(timeline_item)
       client
     end
-
 
     def initialize(opts)
       self.api_keys = opts[:api_keys] || ::Glass::ApiKeys.new
@@ -83,7 +79,7 @@ module Glass
     
     def timeline_list(opts={as_hash: true})
       retval = @timeline_list.nil? ? self.list(opts) : @timeline_list
-      opts[:as_hash] ? retval.map(&:to_hash) : retval
+      opts[:as_hash] ? retval.map(&:to_hash).map(&:with_indifferent_access) : retval
     end
 
 
