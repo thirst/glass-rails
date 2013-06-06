@@ -31,19 +31,8 @@ This will generate a yaml file for your keys, an initializer for
 setting up configuration details, and migrations for the appropriate
 tables.
 
-### Templates
-
-This gem includes a template generator, which provides a basic 
-set of default templates (derived directly from the recommended templates 
-which are shown in the glass playground). 
-
-To generate the default templates, you can run the command:
-
-    rails g glass:templates
-
-This will generate a basic series of templates under the path,
-`app/views/glass` though you may want to organize them more logically,
-depending on your use case
+Additionally, the install generator will create a set of html.erb templates for you to use (optionally) when creating timeline items to post to a user. The templates will be created under the directory
+`app/views/glass` though you may want to organize them more logically, depending on your use case.
 
 ### Glass Models - (Introduction)
 
@@ -222,6 +211,30 @@ in the body object when it gets posted. You can therefore do something like this
 ```ruby
 gt.insert(speakableText: "some text to be read aloud")
 ```
+## License 
+
+Copyright (c) 2013 Thirst Labs, Inc.
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Contributing
 
