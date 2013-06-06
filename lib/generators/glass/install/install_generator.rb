@@ -33,6 +33,9 @@ module Glass
       def create_initializer
         copy_file "initializer.rb", "config/initializers/glass.rb"
       end
+      def copy_glass_templates
+        directory("glass_templates", "app/views/glass")
+      end
     end
   end
 end
