@@ -1,7 +1,7 @@
 require "rails/all"
 require 'active_support/core_ext/numeric/time'
 require 'active_support/dependencies'
-
+require 'glass/rails/version'
 
 module Glass
 
