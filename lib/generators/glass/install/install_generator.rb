@@ -4,9 +4,13 @@ require 'rails/generators/migration'
 
 module Glass
   module Generators
-    class InstallGenerator < Base
-      include Rails::Generators::Migration
+    class InstallGenerator < ::Rails::Generators::Base
+      include ::Rails::Generators::Migration
       argument :user_model, type: :string, default: "User"
+
+      def self.source_root
+        @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
+      end
 
       def create_configuration_file
         copy_file("google-oauth.yml", "config/google-api-keys.yml")

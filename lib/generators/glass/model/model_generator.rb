@@ -6,6 +6,11 @@ module Glass
   module Generators
     class ModelGenerator < Base
       argument :model_name, type: :string
+
+      def self.source_root
+        @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
+      end
+      
       def copy_glass_templates
         unless File.directory?("app/models/glass/")
           empty_directory("app/models/glass")
