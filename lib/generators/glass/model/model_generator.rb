@@ -4,7 +4,7 @@ require 'rails/generators/migration'
 
 module Glass
   module Generators
-    class ModelGenerator < Base
+    class ModelGenerator < ::Rails::Generators::Base
       argument :model_name, type: :string
 
       def self.source_root

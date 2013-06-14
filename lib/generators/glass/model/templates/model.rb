@@ -21,8 +21,11 @@ class Glass::<%= model_name.camelize %> < Glass::TimelineItem
 
 
 
-  def custom_action_handler
+  def custom_action_handler(response)
     ## logic for handling custom action
+    ##
+    ## response is a hash object which google sends back 
+    ## when the action is invoked
   end
 
 end
