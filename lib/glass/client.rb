@@ -77,15 +77,31 @@ module Glass
       inserting_content = { api_method: mirror_api.timeline.send(action), 
                             body_object: body_object}
     end
+    def get(id)
+      self.google_client.execute(get_timeline_item_parameters(id))
+    end
+
     def insert(options={})
       google_client.execute(rest_action(options, "insert"))
     end
+
+
     def patch(options={})
       glass_item_id = options.delete(:glass_item_id)
       patch_action = rest_action(options, "patch").merge(parameters: {id: glass_item_id})
       puts patch_action
       google_client.execute(patch_action)
     end
+
+    def update(timeline_item, options={})
+      glass_item_id = options.delete(:glass_item_id)
+      update_content = { api_method: mirror_api.timeline.update, 
+                            body_object: timeline_item,
+                            parameters: {id: glass_item_id}}
+      google_client.execute update_content
+    end
+
+
 
     ## deprecated: please use cached_list instead
     def timeline_list

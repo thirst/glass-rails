@@ -212,42 +212,55 @@ module Glass
       return self
     end
 
+
+
+
+
     def insert(opts={})
+      puts "DEPRECATION WARNING: insert is now deprecated, please use mirror_insert instead"
+      mirror_insert(opts)
+    end
+
+
+    def mirror_insert(opts={})
       result = client.insert(opts)
-      if result.error? 
-        raise TimelineInsertionError
-      else
-        data = result.data
-        result_data_type = :html #default
-        [:html, :text].each do |result_type|
-          result_data_type = result_type if data.send(result_type).present?
-        end
-        self.update_attributes(glass_item_id: data.id, 
-                                glass_etag: data.etag,
-                                glass_self_link: data.self_link,
-                                glass_kind: data.kind,
-                                glass_created_at: data.created,
-                                glass_updated_at: data.updated,
-                                glass_content_type: result_data_type,
-                                glass_content: data.send(result_data_type))
-      end
+      raise TimelineInsertionError if result.error? 
+      save_data(result)
     end
-
-
-
-    def get(opts={})
+    def mirror_get(opts={})
       self.client = Glass::Client.create(self)
-      client.get_timeline_item(self.glass_item_id).with_indifferent_access
+      result = client.get(self.glass_item_id)
+      save_data(result)
     end
-    def patch(opts={})
+    def mirror_patch(opts={})
       opts.merge!(glass_item_id: self.glass_item_id)
       self.client = Glass::Client.create(self)
-      client.patch(opts)
+      result = client.patch(opts)
+      save_data(result)
     end
-    # def update(opts={})
+    def mirror_update(timeline_item, opts={})
+      opts.merge!(glass_item_id: self.glass_item_id)
+      self.client = Glass::Client.create(self)
+      result = client.update(timeline_item, opts) 
+      save_data(result)   
+    end
 
-    # end
-
+    def save_data(result)
+      data = result.data
+      result_data_type = :html #default
+      [:html, :text].each do |result_type|
+        result_data_type = result_type if data.send(result_type).present?
+      end
+      self.update_attributes(glass_item_id: data.id, 
+                              glass_etag: data.etag,
+                              glass_self_link: data.self_link,
+                              glass_kind: data.kind,
+                              glass_created_at: data.created,
+                              glass_updated_at: data.updated,
+                              glass_content_type: result_data_type,
+                              glass_content: data.send(result_data_type))
+      to_indifferent_json_hash(result)
+    end
 
 
     ## this is not intended to be a part of the public api
@@ -265,5 +278,10 @@ module Glass
     def has_default_template?
       self.class.default_template
     end
+    private
+    def to_indifferent_json_hash(obj)
+      JSON.parse(obj.body).with_indifferent_access
+    end
+
   end
 end
