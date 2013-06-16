@@ -55,32 +55,46 @@ module Glass
     end
 
 
-    def json_content(options)
+    def json_content(options, api_method="insert")
       if c = options[:content]
         data = c.is_a?(String) ? {text: c} : c
       else
         data = self.timeline_item.to_json.merge(options)
       end
       data = format_hash_properly(data)
-      mirror_api.timeline.insert.request_schema.new(data)
+      mirror_api.timeline.send(api_method).request_schema.new(data)
     end
-    def text_content(text)
-      mirror_api.timeline.insert.request_schema.new({text: text})
+
+    def text_content(text, api_method="insert")
+      mirror_api.timeline.send(api_method).request_schema.new({text: text})
     end
 
     ## optional parameter is merged into the content hash 
     ## before sending. good for specifying more application
     ## specific stuff like speakableText parameters. 
-
+    def rest_action(options, action="insert")
+      body_object = json_content(options, action)
+      inserting_content = { api_method: mirror_api.timeline.send(action), 
+                            body_object: body_object}
+    end
     def insert(options={})
-      body_object = json_content(options)
-      inserting_content = { api_method: mirror_api.timeline.insert, 
-                            body_object: body_object }
-      google_client.execute(inserting_content)
+      google_client.execute(rest_action(options, "insert"))
+    end
+    def patch(options={})
+      glass_item_id = options.delete(:glass_item_id)
+      patch_action = rest_action(options, "patch").merge(parameters: {id: glass_item_id})
+      puts patch_action
+      google_client.execute(patch_action)
     end
 
-    
-    def timeline_list(opts={as_hash: true})
+    ## deprecated: please use cached_list instead
+    def timeline_list
+      puts "DEPRECATION WARNING: timeline_list is now deprecated, please use cached_list instead"
+      cached_list
+    end
+
+
+    def cached_list(opts={as_hash: true})
       retval = @timeline_list.nil? ? self.list(opts) : @timeline_list
       opts[:as_hash] ? retval.map(&:to_hash).map(&:with_indifferent_access) : retval
     end
@@ -115,6 +129,10 @@ module Glass
       end while page_token.to_s != ''
       timeline_list(opts)
     end
+
+
+
+
     def delete(options={})
       deleting_content = { api_method: mirror_api.timeline.delete,
                            parameters: options }
@@ -125,6 +143,8 @@ module Glass
     def response_hash(google_response)
       JSON.parse(google_response.body).with_indifferent_access
     end
+
+
     private
 
     def setup_with_our_access_tokens
@@ -145,10 +165,6 @@ module Glass
       end
     end
 
-    def to_google_time(time)
-      Time.now.to_i + time
-    end
-
     def convert_user_data(google_data_hash)
       ea_data_hash = {}
       ea_data_hash["token"] = google_data_hash["access_token"]
@@ -156,12 +172,18 @@ module Glass
       ea_data_hash["id_token"] = google_data_hash["id_token"]
       ea_data_hash
     end
+
+
+    private
     def format_hash_properly(data_hash)
       data_hash.inject({}) do |acc, (key, value)|
         new_key = key.to_s.camelize(:lower)
         acc[new_key]= (new_key == "displayTime") ? format_date(value) : value
         acc
       end.with_indifferent_access
+    end    
+    def to_google_time(time)
+      Time.now.to_i + time
     end
     def format_date(time)
       time.to_time.utc.iso8601.gsub("Z", ".000Z") # fucking google has a weird format

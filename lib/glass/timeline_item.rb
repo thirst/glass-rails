@@ -232,8 +232,17 @@ module Glass
                                 glass_content: data.send(result_data_type))
       end
     end
+
+
+
+    def get(opts={})
+      self.client = Glass::Client.create(self)
+      client.get_timeline_item(self.glass_item_id).with_indifferent_access
+    end
     def patch(opts={})
-      
+      opts.merge!(glass_item_id: self.glass_item_id)
+      self.client = Glass::Client.create(self)
+      client.patch(opts)
     end
     # def update(opts={})
 
