@@ -1,4 +1,5 @@
 require 'active_record'
+require 'active_support/core_ext/hash/indifferent_access'
 require "glass/menu_item"
 ## this is an abstract class, not intended to be
 ## used directly
