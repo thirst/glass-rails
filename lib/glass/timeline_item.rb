@@ -244,6 +244,11 @@ module Glass
       result = client.update(timeline_item, opts) 
       save_data(result)   
     end
+    def mirror_delete
+      self.client = Glass::Client.create(self)
+      client.delete(id: self.glass_item_id)
+      self.update_attributes(is_deleted: true)
+    end
 
     def save_data(result)
       data = result.data
