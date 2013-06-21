@@ -15,9 +15,9 @@ module Glass
 
     belongs_to :google_account
 
-    attr_accessible :display_time,      :glass_content,     :glass_content_type, 
-                    :glass_created_at,  :glass_etag,        :glass_item_id, 
-                    :glass_kind,        :glass_self_link,   :glass_updated_at, 
+    attr_accessible :display_time,      :glass_content,     :glass_content_type,
+                    :glass_created_at,  :glass_etag,        :glass_item_id,
+                    :glass_kind,        :glass_self_link,   :glass_updated_at,
                     :is_deleted,        :google_account_id
 
 
@@ -29,15 +29,15 @@ module Glass
 
     class_attribute :actions
     class_attribute :menu_items
-    class_attribute :default_template 
+    class_attribute :default_template
 
     attr_accessor :template_type, :to_json
 
 
 
     ## only a writer for these two
-    ## because I want to hook an error 
-    ## message to each of these if they haven't 
+    ## because I want to hook an error
+    ## message to each of these if they haven't
     ## had there values set yet.
     attr_writer :client, :mirror_content, :template_name
 
@@ -54,7 +54,7 @@ module Glass
     def mirror_content
       raise UnserializedTemplateError unless @mirror_content
       @mirror_content
-    end 
+    end
     def client
       raise UnserializedTemplateError unless @client
       @client
@@ -69,18 +69,36 @@ module Glass
 
 
     ## this methods sets the default template for
-    ## all instances of the class. 
+    ## all instances of the class.
 
-    ## Usage: 
+    ## Usage:
     ##   class Glass::Tweet < Glass::TimelineItem
 
-    ##     defaults_template "table.html.erb" 
+    ##     defaults_template with: "table.html.erb"
                 ## this defaults to the glass_template_path
                 ## which you set in your glass initializer.
 
     ##   end
     def self.defaults_template(opts={})
-      self.default_template = opts[:with] if opts[:with]
+      puts "DEPRECATION WARNING: defaults_template is now deprecated, please use defaults_template_with instead"
+      self.default_template = opts[:with]
+    end
+
+    ## this methods sets the default template for
+    ## all instances of the class.
+
+    ## Usage:
+    ##   class Glass::Tweet < Glass::TimelineItem
+
+    ##     defaults_template_with "table.html.erb"
+                ## this defaults to the glass_template_path
+                ## which you set in your glass initializer.
+
+    ##   end
+    def self.defaults_template_with(name_of_template)
+      if name_of_template.is_a? Symbol
+        self.default_template = name_of_template.to_s + ".html.erb"
+      end
     end
 
 
@@ -91,15 +109,15 @@ module Glass
 
 
     ## this methods sets the default template for
-    ## all instances of the class. 
+    ## all instances of the class.
 
-    ## Usage: 
+    ## Usage:
     ##   class Glass::Tweet < Glass::TimelineItem
 
     ##     manages_templates :template_manager_name
                 ## this will set your template manager
                 ## for this class. this will override
-                ## defaults_template path if it is 
+                ## defaults_template path if it is
                 ## defined.
     ##   end
     def self.manages_templates(opts={})
@@ -111,9 +129,9 @@ module Glass
 
 
     ## this methods sets the default template for
-    ## all instances of the class. 
+    ## all instances of the class.
 
-    ## Usage: 
+    ## Usage:
     ##   class Glass::Tweet < Glass::TimelineItem
 
     ##     has_menu_item :my_custom_action,
@@ -126,11 +144,11 @@ module Glass
     ##         # action occurs.
     ##       end
     ##   end
-    def self.has_menu_item(action_sym, opts={}) 
+    def self.has_menu_item(action_sym, opts={})
       self.actions ||= []
       self.menu_items ||= []
       unless self.actions.include?(action_sym)
-        self.actions += [action_sym] 
+        self.actions += [action_sym]
         defines_callback_methods(action_sym, opts)
         menu_item = ::Glass::MenuItem.create(action_sym, opts)
         self.menu_items += [menu_item]
@@ -140,17 +158,17 @@ module Glass
 
 
     ## this is really just a little meta-programming
-    ## trick which basically forces a call to the method 
+    ## trick which basically forces a call to the method
     ## specified by with parameter in the has_menu_item method.
-    ## 
-    ## it allows you to put the callback logic right 
-    ## there in the model. 
+    ##
+    ## it allows you to put the callback logic right
+    ## there in the model.
 
     def self.defines_callback_methods(action, opts)
       self.send(:define_method, "handles_#{action.to_s.underscore}") do |json|
         if self.respond_to?(opts[:handles_with])
           self.method(opts[:handles_with]).arity > 0 ? self.send(opts[:handles_with], json) : self.send(opts[:handles_with])
-        else 
+        else
           raise MenuItemHandlerIsNotDefinedError
         end
       end
@@ -174,7 +192,7 @@ module Glass
 
 
 
-    ## this method will instantiate instance variables 
+    ## this method will instantiate instance variables
     ## in the erb template with the values you specify
     ## in a hash parameter under the key [:template_variables]
 
@@ -183,16 +201,16 @@ module Glass
     ## @timeline_object =  Glass::TimelineItem.new(google_account_id: @google_account.id)
     ## @timeline_object.serialize({template_variables: {content: "this is the content
     ##                                                            i've pushed to glass"}})
-    ## 
+    ##
     ## would render this erb template:
 
 
-    ## <article> 
+    ## <article>
     ##   <%= @content %>
     ## </article>
 
     ## into this:
-  
+
     ## '<article> \n    this is the content i've pushed to glass \n  </article>'
     ##
     ##
@@ -200,7 +218,7 @@ module Glass
     ## requests you send with your push.
 
 
-    ## 
+    ##
     def serialize(opts={})
       raise GoogleAccountNotSpecifiedError unless self.google_account.present?
       type = self.template_type || :html
@@ -225,7 +243,7 @@ module Glass
 
     def mirror_insert(opts={})
       result = client.insert(opts)
-      raise TimelineInsertionError if result.error? 
+      raise TimelineInsertionError if result.error?
       save_data(result)
     end
     def mirror_get(opts={})
@@ -234,20 +252,20 @@ module Glass
       save_data(result)
     end
     def mirror_patch(opts={})
-      opts.merge!(glass_item_id: self.glass_item_id)
+      opts.merge! glass_item_id: self.glass_item_id
       self.client = Glass::Client.create(self)
       result = client.patch(opts)
       save_data(result)
     end
     def mirror_update(timeline_item, opts={})
-      opts.merge!(glass_item_id: self.glass_item_id)
+      opts.merge! glass_item_id: self.glass_item_id
       self.client = Glass::Client.create(self)
-      result = client.update(timeline_item, opts) 
-      save_data(result)   
+      result = client.update(timeline_item, opts)
+      save_data(result)
     end
     def mirror_delete
       self.client = Glass::Client.create(self)
-      client.delete(id: self.glass_item_id)
+      client.delete id: self.glass_item_id
       self.update_attributes(is_deleted: true)
     end
 
@@ -257,7 +275,7 @@ module Glass
       [:html, :text].each do |result_type|
         result_data_type = result_type if data.send(result_type).present?
       end
-      self.update_attributes(glass_item_id: data.id, 
+      self.update_attributes(glass_item_id: data.id,
                               glass_etag: data.etag,
                               glass_self_link: data.self_link,
                               glass_kind: data.kind,
@@ -265,6 +283,7 @@ module Glass
                               glass_updated_at: data.updated,
                               glass_content_type: result_data_type,
                               glass_content: data.send(result_data_type))
+
       to_indifferent_json_hash(result)
     end
 

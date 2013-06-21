@@ -30,7 +30,7 @@ module Glass
 
     ## Must be HTTPS
     def callback_url
-      Rails.application.routes.url_helpers.glass_notifications_callback_url(protocol: 'https')
+      ::Rails.application.routes.url_helpers.glass_notifications_callback_url(protocol: 'https')
     end
 
     ## Token string used to identify user in the callback
