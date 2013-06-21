@@ -20,7 +20,12 @@ class GoogleAccount < ActiveRecord::Base
     subscription = Glass::Subscription.new google_account: self
     subscription.insert
   end
-
+  def list
+    Glass::Client.new(google_account: self).list
+  end
+  def cached_list
+    Glass::Client.new(google_account: self).cached_list
+  end
   private
   def generate_verification_secret
     self.verification_secret = SecureRandom.urlsafe_base64

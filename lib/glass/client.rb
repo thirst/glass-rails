@@ -4,7 +4,7 @@ require "google/api_client"
 
 module Glass
   class Client
-    attr_accessor :access_token,          :google_client,           :mirror_api, 
+    attr_accessor :access_token,          :google_client,           :mirror_api,
                   :google_account,        :refresh_token,           :content,
                   :mirror_content_type,   :timeline_item,           :has_expired_token,
                   :api_keys,              :timeline_list
@@ -21,7 +21,7 @@ module Glass
       self.mirror_api = google_client.discovered_api("mirror", "v1")
       self.google_account = opts[:google_account]
 
-      ### this isn't functional yet but this is an idea for 
+      ### this isn't functional yet but this is an idea for
       ### an api for those who wish to opt out of passing in a
       ### google account, by passing in a hash of options
       ###
@@ -29,7 +29,7 @@ module Glass
       ### the tricky aspect of this is how to handle the update
       ### of the token information if the token is expired.
 
-      self.access_token = opts[:access_token] || google_account.try(:token) 
+      self.access_token = opts[:access_token] || google_account.try(:token)
       self.refresh_token = opts[:refresh_token] || google_account.try(:refresh_token)
       self.has_expired_token = opts[:has_expired_token] || google_account.has_expired_token?
 
@@ -69,12 +69,12 @@ module Glass
       mirror_api.timeline.send(api_method).request_schema.new({text: text})
     end
 
-    ## optional parameter is merged into the content hash 
+    ## optional parameter is merged into the content hash
     ## before sending. good for specifying more application
-    ## specific stuff like speakableText parameters. 
+    ## specific stuff like speakableText parameters.
     def rest_action(options, action="insert")
       body_object = json_content(options, action)
-      inserting_content = { api_method: mirror_api.timeline.send(action), 
+      inserting_content = { api_method: mirror_api.timeline.send(action),
                             body_object: body_object}
     end
     def get(id)
@@ -95,7 +95,7 @@ module Glass
 
     def update(timeline_item, options={})
       glass_item_id = options.delete(:glass_item_id)
-      update_content = { api_method: mirror_api.timeline.update, 
+      update_content = { api_method: mirror_api.timeline.update,
                             body_object: timeline_item,
                             parameters: {id: glass_item_id}}
       google_client.execute update_content
@@ -104,7 +104,7 @@ module Glass
 
 
     ## deprecated: please use cached_list instead
-    def timeline_list
+    def timeline_list(opts={as_hash: true})
       puts "DEPRECATION WARNING: timeline_list is now deprecated, please use cached_list instead"
       cached_list
     end
@@ -117,7 +117,7 @@ module Glass
 
 
 
-    ### this method is pretty much extracted directly from 
+    ### this method is pretty much extracted directly from
     ### the mirror API code samples in ruby
     ###
     ### https://developers.google.com/glass/v1/reference/timeline/list
@@ -164,13 +164,13 @@ module Glass
     private
 
     def setup_with_our_access_tokens
-      ["client_id", "client_secret"].each do |meth| 
-        google_client.authorization.send("#{meth}=", self.api_keys.send(meth)) 
+      ["client_id", "client_secret"].each do |meth|
+        google_client.authorization.send("#{meth}=", self.api_keys.send(meth))
       end
     end
 
     def setup_with_user_access_token
-      google_client.authorization.update_token!(access_token: access_token, 
+      google_client.authorization.update_token!(access_token: access_token,
                                                 refresh_token: refresh_token)
       update_token_if_necessary
     end
@@ -197,7 +197,7 @@ module Glass
         acc[new_key]= (new_key == "displayTime") ? format_date(value) : value
         acc
       end.with_indifferent_access
-    end    
+    end
     def to_google_time(time)
       Time.now.to_i + time
     end
