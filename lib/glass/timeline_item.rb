@@ -15,12 +15,6 @@ module Glass
 
     belongs_to :google_account
 
-    attr_accessible :display_time,      :glass_content,     :glass_content_type,
-                    :glass_created_at,  :glass_etag,        :glass_item_id,
-                    :glass_kind,        :glass_self_link,   :glass_updated_at,
-                    :is_deleted,        :google_account_id
-
-
 
     ## i'd use cattr_accessor, but unfortunately
     ## ruby has some very crappy class variables, which
