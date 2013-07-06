@@ -1,7 +1,5 @@
 require "yaml"
 module Glass
-  ## just a small class to organize the api key logic info
-  ## from the yml file in config. 
   class ApiKeys
     class APIKeyConfigurationError < StandardError; end;
     class YAMLDoesNotHaveTheRightKeysForExtraction < StandardError; end;
