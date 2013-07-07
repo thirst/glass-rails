@@ -1,7 +1,7 @@
 class Glass::<%= model_name.camelize %> < Glass::TimelineItem
 
 
-  defaults_template with: "table.html.erb"
+  defaults_template_with  :simple
 
 
 

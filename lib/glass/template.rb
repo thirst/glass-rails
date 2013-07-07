@@ -19,9 +19,9 @@ module Glass
     ## "app/views/glass-templates/tweets/blue.html.erb"
 
     ## then your template name would be:
-    ## "tweets/blue.html.erb"
+    ## "tweets/blue"
     def initialize(opts={})
-      self.template_name = opts.delete(:template_name) || "simple.html.erb"
+      self.template_name = opts.delete(:template_name) || "simple"
       set_template_instance_variables(opts)
       super(glass_template_path)
     end

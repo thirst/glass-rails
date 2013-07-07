@@ -27,20 +27,11 @@ module Glass
 
     attr_accessor :template_type, :to_json
 
-
-
     ## only a writer for these two
     ## because I want to hook an error
     ## message to each of these if they haven't
     ## had there values set yet.
     attr_writer :client, :mirror_content, :template_name
-
-
-
-
-
-
-
 
     ### a couple custom attr_readers which raise a
     ### helpful error message if the value is nil;
@@ -53,15 +44,7 @@ module Glass
       raise UnserializedTemplateError unless @client
       @client
     end
-
-
-
-
-
-
-
-
-
+    
     ## this methods sets the default template for
     ## all instances of the class.
 
@@ -84,23 +67,18 @@ module Glass
     ## Usage:
     ##   class Glass::Tweet < Glass::TimelineItem
 
-    ##     defaults_template_with "table.html.erb"
+    ##     defaults_template_with :table
                 ## this defaults to the glass_template_path
                 ## which you set in your glass initializer.
 
     ##   end
     def self.defaults_template_with(name_of_template)
       if name_of_template.is_a? Symbol
-        self.default_template = name_of_template.to_s + ".html.erb"
+        self.default_template = name_of_template.to_s
+      else
+        raise InvalidArgumentError, 'Template name is not a symbol'
       end
     end
-
-
-
-
-
-
-
 
     ## this methods sets the default template for
     ## all instances of the class.
@@ -284,13 +262,13 @@ module Glass
 
     ## this is not intended to be a part of the public api
     def template_name
-      @template_name = self.class.default_template || "simple.html.erb"
+      @template_name = self.class.default_template
     end
 
     ## this is not intended to be a part of the public api
     def setup_template(variables={})
-      glass_template_path = variables[:template_name] || self.template_name
-      Glass::Template.new({template_name: glass_template_path}.merge(variables)).render_self
+      variables[:template_name] ||= self.template_name
+      Glass::Template.new(variables).render_self
     end
 
     ## this is not intended to be a part of the public api
