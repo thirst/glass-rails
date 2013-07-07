@@ -15,6 +15,7 @@ module Glass
 
     belongs_to :google_account
 
+    before_destroy {|obj| obj.mirror_delete}
 
     ## i'd use cattr_accessor, but unfortunately
     ## ruby has some very crappy class variables, which
