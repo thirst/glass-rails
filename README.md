@@ -34,6 +34,23 @@ tables.
 Additionally, the install generator will create a set of html.erb templates for you to use (optionally) when creating timeline items to post to a user. The templates will be created under the directory
 `app/views/glass` though you may want to organize them more logically, depending on your use case.
 
+### API Key Configuration
+
+The glass install generator will automatically generate a yaml file for you in the correct format for storing your client id and client secret, for each respective environment. You can optionally bypass loading your API Keys from 
+a YAML file by utilizing the generated initializer, which allows you to set custom configurations for your application. 
+
+If you want to load your keys, for example, from your ENV variables, you can do so like this:
+
+```ruby
+Glass.setup do |config|
+
+  ## blah blah some config stuff..
+  
+  
+  config.client_id = ENV["GOOGLE_CLIENT_ID"]
+  config.client_secret = ENV["GOOGLE_CLIENT_SECRET"]
+end
+```
 ### Glass Models - (Introduction)
 
 This gem also provides a glass model generator, which generates a timeline-item
@@ -196,12 +213,12 @@ mirror api for insertion into the timeline.
 Then all you have to do is use the following command to actually insert the content:
 
 ```ruby
-gt.insert()
+gt.mirror_insert()
 ```
 
 Additionally, if you would like to merge in attributes into the hash before it is 
 posted to the mirror-api, then you can optionally pass in a hash of attributes 
-to the insert() method call, and the hash will be merged into the body_object that
+to the mirror_insert() method call, and the hash will be merged into the body_object that
 is posted to the mirror api.
 
 This last point is relevant, for example, in the case of reading aloud text. 
@@ -209,7 +226,7 @@ To do so, you need to specify a speakableText: "some text to be read aloud" attr
 in the body object when it gets posted. You can therefore do something like this:
 
 ```ruby
-gt.insert(speakableText: "some text to be read aloud")
+gt.mirror_insert(speakableText: "some text to be read aloud")
 ```
 ## License 
 
