@@ -17,7 +17,7 @@ module Glass
 
     def initialize(opts)
       self.api_keys = opts[:api_keys] || ::Glass::ApiKeys.new
-      self.google_client = ::Google::APIClient.new
+      initialize_google_api_client
       self.mirror_api = google_client.discovered_api("mirror", "v1")
       self.google_account = opts[:google_account]
 
@@ -36,6 +36,11 @@ module Glass
       setup_with_our_access_tokens
       setup_with_user_access_token
       self
+    end
+    def initialize_google_api_client
+      application_name = ::Glass.application_name
+      application_version = ::Glass.application_version
+      self.google_client = ::Google::APIClient.new(application_name: application_name, application_version: application_version)
     end
 
     def get_timeline_item(id)

@@ -4,14 +4,14 @@ require 'active_support/dependencies'
 require 'glass/rails/version'
 
 module Glass
+  
+  mattr_accessor :application_name
+  application_name = (defined?(::Rails) && ::Rails.application) ? ::Rails.application.class.name.split('::').first : "SomeGlassApp"
+  @@application_name = application_name
 
-  mattr_accessor :brandname
-  @@brandname = "example"
-
-  mattr_accessor :brandname_styles
-  @@brandname_styles = {color: "#8BCDF8", 
-                        font_size: "30px"}
-
+  mattr_accessor :application_version
+  @@application_version = "0.0.1"
+  
   mattr_accessor :glass_template_path
   @@glass_template_path = "app/views/glass" 
 

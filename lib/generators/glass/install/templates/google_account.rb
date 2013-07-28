@@ -1,8 +1,8 @@
 class GoogleAccount < ActiveRecord::Base
   belongs_to :<%= user_model.underscore.singularize %>
-  attr_accessible :email, :expires_at, :name, :refresh_token, :token, :verification_secret
   before_create :generate_verification_secret
   after_create :subscribe_to_google_notifications
+  
   def token_expiry
     Time.at(self.expires_at)
   end
