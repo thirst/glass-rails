@@ -15,10 +15,18 @@ module Glass
   mattr_accessor :glass_template_path
   @@glass_template_path = "app/views/glass" 
 
+  mattr_accessor :_api_keys
+  @@_api_keys = nil
 
+  mattr_accessor :client_id
+
+  mattr_accessor :client_secret
+  
   ## devise trick
   def self.setup
     yield self
+    require "glass/api_keys"
+    Glass::ApiKeys.generate!
   end
-
 end
+

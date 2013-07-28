@@ -1,4 +1,3 @@
-require "glass/api_keys"
 require 'active_support/core_ext/hash/indifferent_access'
 require "google/api_client"
 
@@ -16,36 +15,18 @@ module Glass
     end
 
     def initialize(opts)
-      self.api_keys = opts[:api_keys] || ::Glass::ApiKeys.new
-      initialize_google_api_client
-      self.mirror_api = google_client.discovered_api("mirror", "v1")
+      setup_google_api_keys
+      initialize_google_client
       self.google_account = opts[:google_account]
-
-      ### this isn't functional yet but this is an idea for
-      ### an api for those who wish to opt out of passing in a
-      ### google account, by passing in a hash of options
-      ###
-      ###
-      ### the tricky aspect of this is how to handle the update
-      ### of the token information if the token is expired.
-
-      self.access_token = opts[:access_token] || google_account.try(:token)
-      self.refresh_token = opts[:refresh_token] || google_account.try(:refresh_token)
-      self.has_expired_token = opts[:has_expired_token] || google_account.has_expired_token?
-
       setup_with_our_access_tokens
       setup_with_user_access_token
       self
-    end
-    def initialize_google_api_client
-      application_name = ::Glass.application_name
-      application_version = ::Glass.application_version
-      self.google_client = ::Google::APIClient.new(application_name: application_name, application_version: application_version)
     end
 
     def get_timeline_item(id)
       response_hash(self.google_client.execute(get_timeline_item_parameters(id)).response)
     end
+
     def get_timeline_item_parameters(id)
       { api_method: self.mirror_api.timeline.get,
         parameters: {
@@ -58,7 +39,6 @@ module Glass
       self.timeline_item = timeline_object
       self
     end
-
 
     def json_content(options, api_method="insert")
       if c = options[:content]
@@ -82,6 +62,7 @@ module Glass
       inserting_content = { api_method: mirror_api.timeline.send(action),
                             body_object: body_object}
     end
+
     def get(id)
       self.google_client.execute(get_timeline_item_parameters(id))
     end
@@ -89,7 +70,6 @@ module Glass
     def insert(options={})
       google_client.execute(rest_action(options, "insert"))
     end
-
 
     def patch(options={})
       glass_item_id = options.delete(:glass_item_id)
@@ -106,14 +86,11 @@ module Glass
       google_client.execute update_content
     end
 
-
-
     ## deprecated: please use cached_list instead
     def timeline_list(opts={as_hash: true})
       puts "DEPRECATION WARNING: timeline_list is now deprecated, please use cached_list instead"
       cached_list
     end
-
 
     def cached_list(opts={as_hash: true})
       retval = @timeline_list.nil? ? self.list(opts) : @timeline_list
@@ -151,15 +128,11 @@ module Glass
       timeline_list(opts)
     end
 
-
-
-
     def delete(options={})
       deleting_content = { api_method: mirror_api.timeline.delete,
                            parameters: options }
       google_client.execute(deleting_content)
     end
-
 
     def response_hash(google_response)
       JSON.parse(google_response.body).with_indifferent_access
@@ -194,8 +167,6 @@ module Glass
       ea_data_hash
     end
 
-
-    private
     def format_hash_properly(data_hash)
       data_hash.inject({}) do |acc, (key, value)|
         new_key = key.to_s.camelize(:lower)
@@ -203,11 +174,25 @@ module Glass
         acc
       end.with_indifferent_access
     end
+
     def to_google_time(time)
       Time.now.to_i + time
     end
+
     def format_date(time)
       time.to_time.utc.iso8601.gsub("Z", ".000Z") # fucking google has a weird format
+    end
+
+    def initialize_google_client
+      application_name = ::Glass.application_name
+      application_version = ::Glass.application_versio
+      self.google_client = ::Google::APIClient.new(application_name: application_name, 
+                                                   application_version: application_version)
+      self.mirror_api = google_client.discovered_api("mirror", "v1")
+    end
+
+    def setup_google_api_keys
+      self.api_keys = ::Glass._api_keys
     end
   end
 end
