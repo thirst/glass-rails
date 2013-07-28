@@ -14,10 +14,8 @@ Glass.setup do |config|
   ## config.application_name = "SomeGlassApp"
 
 
-
   #  modify this to change the application version of your glass app
   ## config.application_version = "0.0.1"
-
 
 
   #  if you don't want to use a yaml file to load your api
@@ -27,7 +25,6 @@ Glass.setup do |config|
   # 
   ## config.client_id = ENV["GOOGLE_CLIENT_ID"]
   ## config.client_secret = ENV["GOOGLE_CLIENT_SECRET"]
-
 
 
   ## manually override your glass views path here.

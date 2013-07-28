@@ -4,7 +4,12 @@ require 'active_support/dependencies'
 require 'glass/rails/version'
 
 module Glass
-  
+  DEVELOPMENT_PROXY_URL = "https://mirrornotifications.appspot.com/forward?url="
+
+  mattr_accessor :dev_callback_url
+
+
+
   mattr_accessor :application_name
   application_name = (defined?(::Rails) && ::Rails.application) ? ::Rails.application.class.name.split('::').first : "SomeGlassApp"
   @@application_name = application_name

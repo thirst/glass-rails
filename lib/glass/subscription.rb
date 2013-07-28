@@ -17,21 +17,20 @@ module Glass
     ##  collection can be :timeline or :locations
     ##  operation is an array of operations subscribed to. Valid values are 'UPDATE', 'INSERT', 'DELETE'
     def insert(opts={})
+      mirror_api_method = opts[:mirror_api_method] || :subscriptions 
       subscription = mirror_api.subscriptions.insert.request_schema.new(
         collection:   opts[:collection] || DEFAULT_COLLECTION,
         userToken:    user_token,
         verifyToken:  verification_secret,
-        callbackUrl:  opts[:callback_url] || callback_url,
+        callbackUrl:  opts[:callback_url] || client.callback_url,
         operation:    opts[:operations] || DEFAULT_OPERATIONS)
-      result = google_client.execute(api_method: mirror_api.subscriptions.insert,
+      result = google_client.execute(api_method: mirror_api.send(mirror_api_method).insert,
                                      body_object: subscription)
       result
     end
 
     ## Must be HTTPS
-    def callback_url
-      ::Rails.application.routes.url_helpers.glass_notifications_callback_url(protocol: 'https')
-    end
+
 
     ## Token string used to identify user in the callback
     def user_token

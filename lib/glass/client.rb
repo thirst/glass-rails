@@ -7,6 +7,7 @@ module Glass
                   :google_account,        :refresh_token,           :content,
                   :mirror_content_type,   :timeline_item,           :has_expired_token,
                   :api_keys,              :timeline_list
+    attr_writer   :callback_url
 
     def self.create(timeline_item, opts={})
       client = new(opts.merge({google_account: timeline_item.google_account}))
@@ -18,6 +19,11 @@ module Glass
       setup_google_api_keys
       initialize_google_client
       self.google_account = opts[:google_account]
+
+      self.access_token = opts[:access_token] || google_account.try(:token)
+      self.refresh_token = opts[:refresh_token] || google_account.try(:refresh_token)
+      self.has_expired_token = opts[:has_expired_token] || google_account.has_expired_token?
+
       setup_with_our_access_tokens
       setup_with_user_access_token
       self
@@ -34,6 +40,18 @@ module Glass
         }
       }
     end
+
+    def callback_url
+      if ::Rails.env.production?
+        ::Rails.application.routes.url_helpers.glass_notifications_callback_url(protocol: 'https')
+      else
+        ::Glass::DEVELOPMENT_PROXY_URL + ::Glass.dev_callback_url + "/glass/notifications"
+      end
+    end
+
+
+
+
 
     def set_timeline_item(timeline_object)
       self.timeline_item = timeline_object
@@ -195,7 +213,7 @@ module Glass
 
     def initialize_google_client
       application_name = ::Glass.application_name
-      application_version = ::Glass.application_versio
+      application_version = ::Glass.application_version
       self.google_client = ::Google::APIClient.new(application_name: application_name, 
                                                    application_version: application_version)
       self.mirror_api = google_client.discovered_api("mirror", "v1")

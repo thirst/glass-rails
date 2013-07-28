@@ -1,5 +1,4 @@
 require "yaml"
-require "pry"
 module Glass
   ## just a small class to organize the api key logic info
   ## from the yml file in config. 
