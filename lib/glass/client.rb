@@ -40,6 +40,16 @@ module Glass
       self
     end
 
+    def get_location(id='latest')
+      response_hash(self.google_client.execute(get_location_parameters(id)).response)
+    end
+
+    def get_location_parameters(id)
+      { api_method: self.mirror_api.locations.get,
+        parameters: { "id" => id}
+      }
+    end
+
     def json_content(options, api_method="insert")
       if c = options[:content]
         data = c.is_a?(String) ? {text: c} : c

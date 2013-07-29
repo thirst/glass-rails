@@ -20,6 +20,9 @@ class GoogleAccount < ActiveRecord::Base
     subscription = Glass::Subscription.new google_account: self
     subscription.insert
   end
+  def update_location(location)
+
+  end
   def list
     Glass::Client.new(google_account: self).list
   end

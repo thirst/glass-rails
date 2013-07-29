@@ -27,9 +27,7 @@ module Glass
     ## Perform the corresponding notification actions
     def handle!
       if collection == "locations"
-        # TODO: This is a location update - should the GoogleAccount handle these updates?
-        # When your Glassware receives a location update, send a request to the glass.locations.get endpoint to retrieve the latest known location.
-        # Something like: google_account.handle_location_update
+        handle_location
       else
         self.glass_item_id = params[:itemId]
         handle_reply(params)
@@ -38,6 +36,11 @@ module Glass
     end
 
     private
+    def handle_location
+      google_client = ::Glass::Client.new(google_account: self.google_account)
+      google_account.update_location(google_client.get_location)
+    end
+
     def handle_reply(params)
       return unless has_user_action? :reply
       google_client = ::Glass::Client.new(google_account: self.google_account)
