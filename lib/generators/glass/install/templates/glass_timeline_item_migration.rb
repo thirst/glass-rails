@@ -13,6 +13,7 @@ class CreateGlassTimelineItems < ActiveRecord::Migration
       t.string :glass_content_type
       t.text :glass_content
       t.datetime :display_time
+      t.integer :parent_id
 
       t.timestamps
     end
