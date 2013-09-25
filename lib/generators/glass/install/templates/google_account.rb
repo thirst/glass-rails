@@ -10,9 +10,10 @@ class GoogleAccount < ActiveRecord::Base
     token_expiry < Time.now
   end
   def update_google_tokens(google_auth_hash)
-    [:token, :id_token, :expires_at].each do |attribute|
-      self.send("#{attribute}=", google_auth_hash[attribute.to_s])
-    end
+    self.token = google_auth_hash["token"]
+    self.id_token = google_auth_hash["id_token"]
+    self.expires_at = google_auth_hash["expires_at"]
+    self.refresh_token = google_auth_hash["refresh_token"] if google_auth_hash["refresh_token"].present?
     self.save
   end
 
