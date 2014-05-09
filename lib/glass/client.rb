@@ -149,7 +149,7 @@ module Glass
             page_token = timeline_items.next_page_token
           end
         else
-          puts "An error occurred: #{result.data['error']['message']}"
+          puts "An error occurred: #{api_result.data['error']['message']}"
           page_token = nil
         end
       end while page_token.to_s != ''
